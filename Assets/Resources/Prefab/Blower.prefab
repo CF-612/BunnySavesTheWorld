@@ -131,7 +131,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -3.9024553, y: 0.00000011920929}
+  m_Offset: {x: -3.9024553, y: 0.010431647}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -141,7 +141,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 7.059149, y: 2.404599}
+  m_Size: {x: 7.059149, y: 2.383736}
   m_EdgeRadius: 0
 --- !u!114 &7996565253294750715
 MonoBehaviour:
@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa2f6c2edebe61146b6c61a507e7351d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Blower
-  IsOn: 1
+  IsOn: 0
   WindForce: {x: -6, y: 0}
   windVFX: {fileID: 0}
   anim: {fileID: 7355109835191513386}
@@ -193,7 +193,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 1
-  m_Mass: 5.4065766
+  m_Mass: 4.414988
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 1
@@ -242,7 +242,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.16324341, y: 0.002257228}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -252,7 +252,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.283721, y: 2.367442}
+  m_Size: {x: 1.8953211, y: 2.3294141}
   m_EdgeRadius: 0
 --- !u!1 &5731895888281889450
 GameObject:

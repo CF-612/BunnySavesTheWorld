@@ -7,6 +7,7 @@ public class ParallaxLayer
     [SerializeField] private float xparallaxMultiplier;
     [SerializeField] private float yParallaxMultiplier = 0.5f; // Y轴视差速度
     [SerializeField] private float imageWidthOffset = 10;
+    [SerializeField] private bool loopEnabled = true;
     private float imageFullWidth;
     private float imageHalfWidth;
 
@@ -26,6 +27,9 @@ public class ParallaxLayer
 
     public void LoopBackground(float cameraLeftEdge,float cameraRightEdge)
     {
+         // 如果不允许循环，直接返回
+        if (!loopEnabled) return;
+        
         float imageRightEdge = (background.position.x + imageHalfWidth) - imageWidthOffset;
         float imageLeftEdge = (background.position.x - imageHalfWidth) + imageWidthOffset;
 
