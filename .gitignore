@@ -1,0 +1,36 @@
+﻿# Unity generated
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+
+# IDE
+.vs/
+.idea/
+*.csproj
+*.sln
+*.slnx
+*.unityproj
+*.userprefs
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+*.pid
+*.pidb
+*.pdb
+*.mdb
+*.apk
+*.aab
+*.unitypackage
+
+# Crashlytics
+crashlytics-build.properties
+
+# Asset import logs
+AssetImportWorker*.log
