@@ -33,9 +33,20 @@ public class PipeEntrance : MonoBehaviour
                 float dot = Vector2.Dot(player.moveInput.normalized, requiredInputDirection.normalized);
                 if (dot > 0.5f)
                 {
-                    player.EnterPipe(parentPipe.waypoints, isStartEntrance, parentPipe.moveSpeed);
+                    player.EnterPipe(parentPipe.waypoints, isStartEntrance, parentPipe.moveSpeed, requiredInputDirection);
                 }
             }
+            return;
+        }
+
+        // 2. 作为普通物理物件处理（如箱子，无按键，靠近中心即自动吸入）
+        PipeTraveler traveler = collision.GetComponent<PipeTraveler>();
+        if (traveler != null)
+        {
+            // 移除了不合理的物理中心点距离限制
+            // 只要物体能碰到入口处的 Trigger，就被直接吸入
+            // 为普通物件传入 null 占据 onPrepareToExit 和 onComplete 参数的位置
+            traveler.StartTravel(parentPipe.waypoints, parentPipe.moveSpeed, isStartEntrance, requiredInputDirection, null, null);
         }
     }
 }

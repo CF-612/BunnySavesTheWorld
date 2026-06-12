@@ -202,6 +202,7 @@ GameObject:
   - component: {fileID: 7211229448113600855}
   - component: {fileID: 7720227300271534095}
   - component: {fileID: 4168924217818924179}
+  - component: {fileID: 2848020945614075080}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -335,3 +336,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88ab96848d73d214aba2049253f91b06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerPlatformStick
+--- !u!114 &2848020945614075080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6693640170066297146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d77804c1a24bc4446bca8e7d40b9054b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PipeTraveler
+  squeezeDuration: 0.15
+  squeezeAmount: 0.4
+  travelSprite: {fileID: 21300000, guid: d345c8206467d024a89db23ed73e6952, type: 3}
+  exitEjectForce: 12

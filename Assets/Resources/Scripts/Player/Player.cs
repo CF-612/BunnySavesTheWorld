@@ -125,9 +125,9 @@ public class Player : Entity
         }
     }
 
-    public void EnterPipe(Transform[] path, bool isStart, float speed)
+    public void EnterPipe(Transform[] path, bool isStart, float speed, Vector2 entryDir)
     {
-        pipeState.SetupPipe(path, isStart, speed);
+        pipeState.SetupPipe(path, isStart, speed, entryDir);
         stateMachine.ChangeState(pipeState);
     }
 
