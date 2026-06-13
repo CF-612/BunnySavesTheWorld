@@ -33,6 +33,12 @@ public class WireManager : MonoBehaviour
     public float topExtension = 0f;
     public float bottomExtension = 0.25f;
 
+    [Header("渲染层级")]
+    [Tooltip("LineRenderer 所在的 Sorting Layer 名称")]
+    public string sortingLayerName = "Ground";
+    [Tooltip("LineRenderer 在 Sorting Layer 中的排序值")]
+    public int sortingOrder = -1;
+
     [Header("断裂清理设置")]
     [Tooltip("完全脱落、不挂靠任何锚点的游离电线，会在多少秒后自动渐隐并消失")]
     public float disappearDelay = 3f;
@@ -100,8 +106,8 @@ public class WireManager : MonoBehaviour
         lr.useWorldSpace = true;
         lr.positionCount = 0;
 
-        lr.sortingLayerName = "Ground"; 
-        lr.sortingOrder = -1;
+        lr.sortingLayerName = sortingLayerName;
+        lr.sortingOrder = sortingOrder;
 
         WireChain newChain = new WireChain { line = lr, nodes = nodes };
         activeChains.Add(newChain);

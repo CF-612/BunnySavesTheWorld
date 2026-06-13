@@ -318,7 +318,7 @@ MonoBehaviour:
   AirStompVelocity: 25
   DigSpeed: 2
   BiteCheck: {fileID: 280459862869515028}
-  BiteCheckRadius: 0.7
+  BiteCheckRadius: 0.6
   WhatIsBiteable:
     serializedVersion: 2
     m_Bits: 1792
