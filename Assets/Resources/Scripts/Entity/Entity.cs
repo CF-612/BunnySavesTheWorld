@@ -80,7 +80,7 @@ public class Entity : MonoBehaviour
         stateMachine.CurrentState.AnimationActionTrigger();
     }
 
-    public void SetVelocity(float xVelocity,float yVelocity)
+    public virtual void SetVelocity(float xVelocity,float yVelocity)
     {
         if(isKnocked)
             return;

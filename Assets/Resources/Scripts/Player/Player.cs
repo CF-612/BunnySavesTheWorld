@@ -36,9 +36,6 @@ public class Player : Entity
     public Transform BiteCheck;
     public float BiteCheckRadius = 0.7f;
     public LayerMask WhatIsBiteable;
-
-    [Header("环境受力")]
-    public Vector2 WindVelocity;
     
     [Header("相机控制")]
     public GameObject pipeCamera;
@@ -85,26 +82,6 @@ public class Player : Entity
     {
         input.Disable();
     }
-
-    public void SetWindVelocity(Vector2 wind)
-    {
-        WindVelocity = wind;
-    }
-
-    // 隐藏基类的 SetVelocity，在原有速度基础上叠加外部风力
-    public new void SetVelocity(float xVelocity, float yVelocity)
-    {
-        float finalY = yVelocity;
-        
-        // 如果存在垂直风力，让Y轴速度平滑向风力上限靠拢，模拟浮空/风洞效果避免速度爆炸
-        if (WindVelocity.y != 0)
-        {
-            finalY = Mathf.Lerp(yVelocity, WindVelocity.y, Time.deltaTime * 5f);
-        }
-
-        base.SetVelocity(xVelocity + WindVelocity.x, finalY);
-    }
-
     public void DetectBiteable()
     {
         // 执行 OverlapCircle 寻找前方可啃咬层级的物体

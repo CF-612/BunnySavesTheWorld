@@ -10,8 +10,6 @@ public class Player_GroundedState : PlayerState
     {
         base.Update();
 
-        player.SetVelocity(0, rb.linearVelocity.y);
-
         // 物理下落检测
         if (rb.linearVelocity.y < 0 && !player.isGround)
             stateMachine.ChangeState(player.fallState);

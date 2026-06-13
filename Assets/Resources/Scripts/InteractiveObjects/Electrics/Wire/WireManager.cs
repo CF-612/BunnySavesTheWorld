@@ -100,7 +100,7 @@ public class WireManager : MonoBehaviour
         lr.useWorldSpace = true;
         lr.positionCount = 0;
 
-        lr.sortingLayerName = "Default"; 
+        lr.sortingLayerName = "Ground"; 
         lr.sortingOrder = -1;
 
         WireChain newChain = new WireChain { line = lr, nodes = nodes };
