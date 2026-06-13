@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 1958571615797671806}
   - component: {fileID: 137903575841803400}
   - component: {fileID: 4178894424131803536}
-  m_Layer: 6
+  - component: {fileID: 5726513221310851227}
+  m_Layer: 10
   m_Name: Box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,7 +129,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.0030367374, y: 0.0063886642}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -138,7 +139,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 3.2790697, y: 2.2418604}
+  m_Size: {x: 3.1791377, y: 2.1875286}
   m_EdgeRadius: 0
 --- !u!50 &137903575841803400
 Rigidbody2D:
@@ -152,7 +153,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 1
-  m_Mass: 7.3512163
+  m_Mass: 6.954455
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 4
@@ -183,3 +184,19 @@ MonoBehaviour:
   squeezeAmount: 0.4
   travelSprite: {fileID: 0}
   exitEjectForce: 15
+--- !u!114 &5726513221310851227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1542910677898133376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17201e4e499cef840b38b06401036db5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CardboardBox
+  sprites:
+  - {fileID: 21300000, guid: af813fd59fea8544e81036351ea9036d, type: 3}
+  - {fileID: 21300000, guid: 2d2280f891debbe4fab3c3681067cafc, type: 3}
+  - {fileID: 21300000, guid: 1eeb492b2f76d874d8a36ad61bcd67ec, type: 3}

@@ -36,6 +36,15 @@ public class Player : Entity
     public Transform BiteCheck;
     public float BiteCheckRadius = 0.7f;
     public LayerMask WhatIsBiteable;
+
+    [Header("啃咬长按与拖拽")]
+    [Tooltip("判定为长按的按住时间阈值（秒）")]
+    public float BiteHoldThreshold = 0.3f;
+    [Tooltip("拖拽时水平移动速度倍率")]
+    public float BiteDragSpeedMultiplier = 1.0f;
+
+    /// <summary>最近一次啃咬命中的目标（用于长按拖拽）</summary>
+    public IBiteable lastBiteTarget { get; private set; }
     
     [Header("相机控制")]
     public GameObject pipeCamera;
@@ -84,6 +93,8 @@ public class Player : Entity
     }
     public void DetectBiteable()
     {
+        lastBiteTarget = null;
+
         // 执行 OverlapCircle 寻找前方可啃咬层级的物体
         Collider2D[] detectedObjects = Physics2D.OverlapCircleAll(BiteCheck.position, BiteCheckRadius, WhatIsBiteable);
 
@@ -95,7 +106,8 @@ public class Player : Entity
             if (biteable != null && !biteable.GetIsBroken())
             {
                 biteable.OnBitten();
-                
+                lastBiteTarget = biteable;
+
                 // 一次啃咬指令通常只对一个物体生效，咬到即跳出循环
                 break;
             }

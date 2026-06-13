@@ -239,8 +239,8 @@ Rigidbody2D:
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
+  m_UseAutoMass: 1
+  m_Mass: 2.7237148
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 3.5
@@ -306,7 +306,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   whatIsGround:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 1088
   groundCheckDistance: 0.72
   wallCheckDistance: 1.19
   groundCheck: {fileID: 8179900976307126597}
@@ -321,8 +321,9 @@ MonoBehaviour:
   BiteCheckRadius: 0.7
   WhatIsBiteable:
     serializedVersion: 2
-    m_Bits: 256
-  WindVelocity: {x: 0, y: 0}
+    m_Bits: 1792
+  BiteHoldThreshold: 0.3
+  BiteDragSpeedMultiplier: 1
   pipeCamera: {fileID: 0}
 --- !u!114 &4168924217818924179
 MonoBehaviour:

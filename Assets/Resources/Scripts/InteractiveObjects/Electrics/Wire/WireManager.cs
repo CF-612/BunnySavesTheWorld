@@ -61,7 +61,7 @@ public class WireManager : MonoBehaviour
         Wire[] wires = GetComponentsInChildren<Wire>();
         foreach (Wire w in wires)
         {
-            w.SetManagerCallback(OnAnyWireBroken);
+            w.onWireBroken.AddListener(OnAnyWireBroken);
         }
     }
 
