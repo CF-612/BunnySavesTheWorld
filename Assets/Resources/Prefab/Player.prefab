@@ -324,6 +324,9 @@ MonoBehaviour:
     m_Bits: 1792
   BiteHoldThreshold: 0.3
   BiteDragSpeedMultiplier: 1
+  fallDeathHeight: 15
+  deathSmokeVFX: {fileID: 3261982194438161797, guid: c85a3dec8a3d5164588224e2ec086ae3, type: 3}
+  RespawnDelay: 1
   pipeCamera: {fileID: 0}
 --- !u!114 &4168924217818924179
 MonoBehaviour:

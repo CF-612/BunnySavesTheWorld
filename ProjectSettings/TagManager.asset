@@ -17,7 +17,7 @@ TagManager:
   - Enemy
   - Wire
   - Box
-  - 
+  - VFX
   - 
   - 
   - 
@@ -56,6 +56,9 @@ TagManager:
     locked: 0
   - name: Pipe
     uniqueID: 4116850333
+    locked: 0
+  - name: VFX
+    uniqueID: 2580540091
     locked: 0
   - name: UI
     uniqueID: 1008870551

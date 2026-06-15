@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Player : Entity
 {
+    public static event Action OnPlayerDeath;
     public PlayerInputSet input { get; private set; }
     
     // 基础状态
@@ -18,6 +19,7 @@ public class Player : Entity
     public Player_AirStompState airStompState { get; private set; }
     public Player_GlideState glideState { get; private set; }
     public Player_PipeState pipeState { get; private set; }
+    public Player_DeadState deadState { get; private set; }
 
     public bool isInsidePipe => stateMachine.CurrentState == pipeState;
 
@@ -45,15 +47,27 @@ public class Player : Entity
 
     /// <summary>最近一次啃咬命中的目标（用于长按拖拽）</summary>
     public IBiteable lastBiteTarget { get; private set; }
-    
+
+    [Header("死亡设置")]
+    [Tooltip("致死坠落高度阈值（世界单位）")]
+    public float fallDeathHeight = 10f;
+    [Tooltip("落地死亡时生成的烟雾特效预制体")]
+    public GameObject deathSmokeVFX;
+    [Tooltip("死亡动画播放完毕后等待销毁的时间（秒）")]
+    public float RespawnDelay = 2f;
+
     [Header("相机控制")]
     public GameObject pipeCamera;
 
     public Vector2 moveInput { get; private set; }
 
+    private SpriteRenderer spriteRenderer;
+
     protected override void Awake()
     {
         base.Awake();
+
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
         input = new PlayerInputSet();
         groundCheck = transform;
@@ -71,12 +85,21 @@ public class Player : Entity
         airStompState = new Player_AirStompState(this, stateMachine, "airStomp");
         glideState = new Player_GlideState(this, stateMachine, "glide");
         pipeState = new Player_PipeState(this, stateMachine, "");
+        deadState = new Player_DeadState(this, stateMachine, "dead");
     }
 
     protected override void Start()
     {
         base.Start();
         stateMachine.Initialize(idleState);
+    }
+
+    public override void EntityDeath()
+    {
+        base.EntityDeath();
+
+        OnPlayerDeath?.Invoke();
+        stateMachine.ChangeState(deadState);
     }
 
     private void OnEnable()
@@ -130,4 +153,44 @@ public class Player : Entity
             Gizmos.DrawWireSphere(BiteCheck.position, BiteCheckRadius);
         }
     }
+
+    /// <summary>隐藏玩家视觉（死亡动画播放完毕后由 LevelManager 调用）</summary>
+    public void HideVisual()
+    {
+        if (spriteRenderer != null)
+            spriteRenderer.enabled = false;
+    }
+
+    /// <summary>恢复玩家视觉（重生传送后由 LevelManager 调用）</summary>
+    public void ShowVisual()
+    {
+        if (spriteRenderer != null)
+            spriteRenderer.enabled = true;
+    }
+
+    /// <summary>在检查点重生：传送 + 恢复物理 + 恢复输入 + 切回 Idle</summary>
+    public void Respawn(Vector3 spawnPosition)
+    {
+        transform.position = spawnPosition;
+        ShowVisual();
+
+        // 恢复物理模拟
+        rb.simulated = true;
+        rb.linearVelocity = Vector2.zero;
+
+        // 恢复碰撞体
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+            col.enabled = true;
+
+        // 重新启用输入
+        input.Enable();
+
+        // 解锁状态机并切回闲置状态
+        stateMachine.CanChangeState = true;
+        stateMachine.ChangeState(idleState);
+    }
+
+    public void Revive()
+    {}
 }
