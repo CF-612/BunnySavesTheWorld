@@ -9,10 +9,10 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: d52898cb05a8ea246bb756b0a0732b4b
   - enabled: 1
-    path: Assets/Scenes/Level1.unity
+    path: Assets/Scenes/Home_Light.unity
     guid: d47eb5cd303e0af44badef06beeb3cb9
   - enabled: 1
-    path: Assets/Scenes/Level2.unity
+    path: Assets/Scenes/City.unity
     guid: 11360267f0c787f40a80c0fc5f1500fe
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 945a2531f7206d0488a0307489bb4a14, type: 2}

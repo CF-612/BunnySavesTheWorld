@@ -99,10 +99,12 @@ public class Player_BiteState : Player_GroundedState
             return;
         }
 
-        // 水平拖拽：玩家与被咬物同步位移
+        // 水平拖拽：有输入时位移 + 播放拖拽音效；无输入时停止音效
         float moveX = player.moveInput.x;
         if (Mathf.Abs(moveX) > 0.01f)
         {
+            AudioManager.Instance?.PlayLoopingSFX("Audio/SFX/InteractiveObjects/MovingBox");
+
             Vector3 displacement = new Vector3(
                 moveX * player.MoveSpd * player.BiteDragSpeedMultiplier * Time.deltaTime,
                 0f,
@@ -111,6 +113,10 @@ public class Player_BiteState : Player_GroundedState
 
             currentBiteTargetTransform.position += displacement;
             player.transform.position += displacement;
+        }
+        else
+        {
+            AudioManager.Instance?.StopLoopingSFX("Audio/SFX/InteractiveObjects/MovingBox");
         }
     }
 
@@ -121,6 +127,9 @@ public class Player_BiteState : Player_GroundedState
         currentBiteTarget = null;
         currentBiteTargetTransform = null;
         anim.speed = 1f;
+
+        // 停止拖拽音效
+        AudioManager.Instance?.StopLoopingSFX("Audio/SFX/InteractiveObjects/MovingBox");
     }
 
     public override void Exit()
@@ -133,6 +142,9 @@ public class Player_BiteState : Player_GroundedState
     public override void AnimationActionTrigger()
     {
         base.AnimationActionTrigger();
+
+        // 播放啃咬音效
+        AudioManager.Instance?.PlaySFX("Audio/SFX/Bunny/Bite");
 
         // 在 Animator 中调用 ActionTrigger() 的那一帧，自动执行物理啃咬检测
         player.DetectBiteable();

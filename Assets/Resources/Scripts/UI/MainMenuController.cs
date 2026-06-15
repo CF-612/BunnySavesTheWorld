@@ -26,6 +26,10 @@ public class MainMenuController : MonoBehaviour
     public float pressScale = 0.9f;  // 点击时缩小比例
     public float effectTime = 0.08f; // 点击动画时间
 
+    // 按钮音效 Resources 路径常量
+    private const string HOVER_SFX_PATH = "Audio/SFX/UI/ChooseBotton";
+    private const string CLICK_SFX_PATH = "Audio/SFX/UI/pop3";
+
     private Image startButtonImage; // 开始按钮自己的 Image
     private Image quitButtonImage;  
     private Sprite startNormalSprite; // 开始按钮原图，用于鼠标移开后恢复
@@ -52,8 +56,11 @@ public class MainMenuController : MonoBehaviour
 
             AddHoverEvent(
                 startButton.gameObject,
-                () => ChangeImageSprite(startButtonImage, hoverSprite), // 鼠标移入时，换开始按钮图片
-                () => ChangeImageSprite(startButtonImage, startNormalSprite)  // 鼠标移出时，把开始按钮图片还原成原图
+                () => {
+                    ChangeImageSprite(startButtonImage, hoverSprite);
+                    if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX(HOVER_SFX_PATH);
+                },
+                () => ChangeImageSprite(startButtonImage, startNormalSprite)
             );
         }
 
@@ -67,7 +74,10 @@ public class MainMenuController : MonoBehaviour
 
             AddHoverEvent(
                 quitButton.gameObject,
-                () => ChangeImageSprite(quitButtonImage, hoverSprite),
+                () => {
+                    ChangeImageSprite(quitButtonImage, hoverSprite);
+                    if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX(HOVER_SFX_PATH);
+                },
                 () => ChangeImageSprite(quitButtonImage, quitNormalSprite)
             );
         }
@@ -120,6 +130,9 @@ public class MainMenuController : MonoBehaviour
     IEnumerator PressButtonEffect(Button button, System.Action action) // 点击按钮时的缩放动画，动画结束后执行 action（可以是 StartGame 或 QuitGame）
     {
         if (button == null) yield break;
+
+        // 播放点击音效
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX(CLICK_SFX_PATH);
 
         Transform buttonTransform = button.transform;
         Vector3 originalScale = buttonTransform.localScale;

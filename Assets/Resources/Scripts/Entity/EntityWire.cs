@@ -64,6 +64,9 @@ public class EntityWire : MonoBehaviour, IBiteable
     {
         isBroken = true;
 
+        // 播放电线断裂音效
+        AudioManager.Instance?.PlaySFX("Audio/SFX/InteractiveObjects/ElectricEffects/WireBroken");
+
         // 实例化彻底断裂的火花特效
         if (sparkVFXPrefab != null)
         {

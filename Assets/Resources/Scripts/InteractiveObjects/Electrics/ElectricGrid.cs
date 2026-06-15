@@ -26,15 +26,21 @@ public class ElectricGrid : EntityEle
     public override void TurnOff()
     {
         base.TurnOff();
-        
+
+        // 播放电网断裂音效
+        AudioManager.Instance?.PlaySFX("Audio/SFX/InteractiveObjects/ElectricEffects/EleGridBroken");
+
         if (isSinking) return; // 已经在下沉，避免重复
         isSinking = true;
-        
+
         StartCoroutine(SinkWithVibration());
     }
 
     private IEnumerator SinkWithVibration()
     {
+        // 播放下沉音效
+        AudioManager.Instance?.PlaySFX("Audio/SFX/InteractiveObjects/ElectricEffects/EleGridFall");
+
         Vector3 startPos = transform.position;
         Vector3 targetPos = startPos + Vector3.down * sinkDistance;
         float elapsed = 0f;

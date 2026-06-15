@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class Player_PipeState : PlayerState
 {
+    private const string PIPE_SLIDE_SFX_PATH = "Audio/SFX/InteractiveObjects/pipe";
+
     private Transform[] currentPipePath;
     private bool isStart;
     private float pipeMoveSpeed;
@@ -25,6 +27,13 @@ public class Player_PipeState : PlayerState
     public override void Enter()
     {
         base.Enter();
+
+        // 播放进入管道音效
+        AudioManager.Instance?.PlaySFX("Audio/SFX/Bunny/Inhale");
+
+        // 开始管道滑行循环音效
+        AudioManager.Instance?.PlayLoopingSFX(PIPE_SLIDE_SFX_PATH);
+
         isTravelComplete = false;
 
         traveler = player.GetComponent<PipeTraveler>();
@@ -58,6 +67,9 @@ public class Player_PipeState : PlayerState
             }
         }
 
+        // 播放退出管道音效
+        AudioManager.Instance?.PlaySFX("Audio/SFX/Bunny/Exhale");
+
         // 2. 强制抹除进入管道前的残留动画状态（例如下落），让动画器切回最中性的闲置姿态
         player.anim.Play("idle"); 
         
@@ -80,11 +92,12 @@ public class Player_PipeState : PlayerState
     {
         base.Exit();
 
+        // 停止管道滑行音效
+        AudioManager.Instance?.StopLoopingSFX(PIPE_SLIDE_SFX_PATH);
+
         if (player.pipeCamera != null)
         {
             player.pipeCamera.SetActive(false);
         }
-
-        // 朝向对齐逻辑已经被转移到 OnPrepareToExit 中，如果有残留的旧代码请清空删除
     }
 }

@@ -4,10 +4,13 @@ public class BouncyPlatform : MonoBehaviour
 {
     [Header("弹跳属性")]
     public float bounceForce = 25f;
-    
+
+    [Header("音效")]
+    [SerializeField] private string bounceSFXPath = "Audio/SFX/BunnyJump/Jump1";
+
     [Header("组件引用")]
     [SerializeField] private Animator anim;
-    
+
     // 动画参数名称，可在面板修改
     [SerializeField] private string animTriggerName = "bounce";
 
@@ -31,6 +34,10 @@ public class BouncyPlatform : MonoBehaviour
             {
                 // 将玩家的垂直速度强制设置为弹跳力，水平速度保持不变
                 player.SetVelocity(player.rb.linearVelocity.x, bounceForce);
+
+                // 播放弹跳音效
+                if (AudioManager.Instance != null)
+                    AudioManager.Instance.PlaySFX(bounceSFXPath, 1f, 0.9f, 1.1f);
 
                 // 播放弹簧或蘑菇形变的动画
                 if (anim != null)

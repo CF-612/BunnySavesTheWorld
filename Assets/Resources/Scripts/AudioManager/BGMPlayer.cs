@@ -1,21 +1,25 @@
-﻿using UnityEngine;
+using UnityEngine;
 
+/// <summary>
+/// 挂载在场景 GameObject 上，声明该场景要播放的 BGM。
+/// Start 时自动通过 AudioManager 播放，切换场景后由新场景的 BGMPlayer 接管。
+/// </summary>
 public class BGMPlayer : MonoBehaviour
 {
-    [Header("当前关卡 BGM Background Music")]
-    public AudioClip bgmClip;  // 音效用：当前关卡要播放的背景音乐
+    [Header("场景 BGM")]
+    public AudioClip bgmClip;
 
-    [Header("是否循环 Loop")]
+    [Header("是否循环")]
     public bool loop = true;
 
     private void Start()
     {
         if (AudioManager.Instance == null)
         {
-            Debug.LogWarning("没有找到 AudioManager，请确认是否从菜单场景进入游戏。");
+            Debug.LogWarning("AudioManager 未找到，BGM 不会播放。请确保场景中存在挂载 AudioManager 的 GameObject。");
             return;
         }
 
-        AudioManager.Instance.PlayBGM(bgmClip, loop);  // 音效用：场景开始时，通知 AudioManager 播放当前关卡 BGM
+        AudioManager.Instance.PlayBGM(bgmClip, loop);
     }
 }

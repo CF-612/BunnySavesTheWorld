@@ -11,6 +11,9 @@ public class Player_DeadState : PlayerState
     {
         base.Enter();
 
+        // 播放坠落死亡音效
+        AudioManager.Instance?.PlaySFX("Audio/SFX/Bunny/FallDown");
+
         // 禁用输入，防止死亡动画期间玩家操作
         input.Disable();
 

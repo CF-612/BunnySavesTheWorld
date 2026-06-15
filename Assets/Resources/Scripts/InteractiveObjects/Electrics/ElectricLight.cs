@@ -19,7 +19,10 @@ public class ElectricLight : EntityEle
     public override void TurnOff()
     {
         base.TurnOff();
-        
+
+        // 播放电灯破裂音效
+        AudioManager.Instance?.PlaySFX("Audio/SFX/InteractiveObjects/ElectricEffects/EleLightBroken");
+
         if (lightSourceObj != null)
             lightSourceObj.SetActive(false);
     }
