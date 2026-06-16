@@ -16,6 +16,10 @@ public class MainMenuController : MonoBehaviour
     [Header("开始游戏剧情 UI 列表 Start Story UI List")]
     public GameObject[] startStoryUIs; // 不拖 = 直接开始游戏；拖多个 = 按顺序一页页播放
 
+    [Header("开场 BGM Opening BGM")]
+    [Tooltip("开场剧情播放时同步播放的 BGM（通常拖入场景1的 BGM）。留空不播放。")]
+    public AudioClip openingBGM;
+
     [Header("剧情翻页防误触延迟 Input Delay")]
     public float inputDelay = 0.5f; // 每页出现后多久才允许按任意键
 
@@ -44,7 +48,7 @@ public class MainMenuController : MonoBehaviour
 
     void Start()
     {
-        HideAllStartStoryUIs(); // 一开始先隐藏所有剧情 UI，避免它们直接显示在主菜单上
+        HideAllStartStoryUIs();
 
         if (startButton != null)
         {
@@ -85,13 +89,13 @@ public class MainMenuController : MonoBehaviour
 
     void Update()
     {
-        if (!playingStartStory) return;  // 如果没有播放开始剧情，就不检测按键翻页
+        if (!playingStartStory) return;
 
-        timer += Time.deltaTime; // 让计时器随着时间增加
+        timer += Time.deltaTime;
 
-        if (timer >= inputDelay && Input.anyKeyDown) // 如果超过防误触时间，并且玩家按下任意键
+        if (timer >= inputDelay && Input.anyKeyDown)
         {
-            ShowNextStartStoryUI(); // 显示下一页剧情 UI
+            ShowNextStartStoryUI();
         }
     }
 
@@ -100,18 +104,22 @@ public class MainMenuController : MonoBehaviour
         if (isStarting) return;
         isStarting = true;
 
-        if (startButton != null) startButton.interactable = false; //防止重复点击
+        if (startButton != null) startButton.interactable = false;
         if (quitButton != null) quitButton.interactable = false;
 
-        if (HasStartStoryUI()) // 如果有可播放的开始剧情 UI
+        // 开场剧情开始时同步播放 BGM
+        if (openingBGM != null && AudioManager.Instance != null)
+            AudioManager.Instance.PlayBGM(openingBGM);
+
+        if (HasStartStoryUI())
         {
-            playingStartStory = true; // 标记正在播放开始剧情
-            currentStoryIndex = -1; 
+            playingStartStory = true;
+            currentStoryIndex = -1;
             ShowNextStartStoryUI();
         }
-        else // 如果没有拖任何剧情 UI
+        else
         {
-            SceneManager.LoadScene(gameSceneName); // 直接进入游戏场景
+            SceneManager.LoadScene(gameSceneName);
         }
     }
 
@@ -127,47 +135,43 @@ public class MainMenuController : MonoBehaviour
 #endif
     }
 
-    IEnumerator PressButtonEffect(Button button, System.Action action) // 点击按钮时的缩放动画，动画结束后执行 action（可以是 StartGame 或 QuitGame）
+    IEnumerator PressButtonEffect(Button button, System.Action action)
     {
         if (button == null) yield break;
 
-        // 播放点击音效
         if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX(CLICK_SFX_PATH);
 
         Transform buttonTransform = button.transform;
         Vector3 originalScale = buttonTransform.localScale;
 
-        buttonTransform.localScale = originalScale * pressScale; // 按下缩小
+        buttonTransform.localScale = originalScale * pressScale;
         yield return new WaitForSeconds(effectTime);
 
-        buttonTransform.localScale = originalScale; // 恢复
+        buttonTransform.localScale = originalScale;
         yield return new WaitForSeconds(effectTime);
 
-        action?.Invoke(); // 执行功能
+        action?.Invoke();
     }
 
-    void ShowNextStartStoryUI()  // 显示下一页开始剧情 UI
+    void ShowNextStartStoryUI()
     {
-        int nextIndex = currentStoryIndex + 1; // 下一页索引等于当前页加 1
+        int nextIndex = currentStoryIndex + 1;
 
         while (nextIndex < startStoryUIs.Length && startStoryUIs[nextIndex] == null)
         {
             nextIndex++;
         }
 
-        // 没有下一页了，直接进入游戏场景
-        // 这里不要关闭最后一页 UI，避免切场景前露出主菜单
         if (nextIndex >= startStoryUIs.Length)
         {
             SceneManager.LoadScene(gameSceneName);
             return;
         }
 
-        // 有下一页时，才关闭当前页
         if (currentStoryIndex >= 0 && currentStoryIndex < startStoryUIs.Length)
         {
-            if (startStoryUIs[currentStoryIndex] != null)  // 如果当前页 UI 不为空
-                startStoryUIs[currentStoryIndex].SetActive(false); // 关闭当前页 UI
+            if (startStoryUIs[currentStoryIndex] != null)
+                startStoryUIs[currentStoryIndex].SetActive(false);
         }
 
         currentStoryIndex = nextIndex;
@@ -176,14 +180,14 @@ public class MainMenuController : MonoBehaviour
         startStoryUIs[currentStoryIndex].SetActive(true);
     }
 
-    bool HasStartStoryUI() // 检查是否有可播放的开始剧情 UI，返回 true 就会进入剧情翻页流程，返回 false 就会直接进入游戏场景
+    bool HasStartStoryUI()
     {
-        if (startStoryUIs == null || startStoryUIs.Length == 0) return false; // 如果数组为空或长度为 0，说明没有剧情 UI
+        if (startStoryUIs == null || startStoryUIs.Length == 0) return false;
 
-        for (int i = 0; i < startStoryUIs.Length; i++) // 遍历数组，检查是否有非空的 UI
+        for (int i = 0; i < startStoryUIs.Length; i++)
         {
-            if (startStoryUIs[i] != null)  
-                return true; 
+            if (startStoryUIs[i] != null)
+                return true;
         }
 
         return false;

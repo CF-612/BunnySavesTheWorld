@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3483039259653959159}
   - component: {fileID: 7966971969110082910}
   - component: {fileID: 8183812520259696822}
+  - component: {fileID: 8716075469736899096}
   m_Layer: 0
   m_Name: LevelManager
   m_TagString: Untagged
@@ -52,6 +53,12 @@ MonoBehaviour:
   interactUI: {fileID: 0}
   storyUIs: []
   inputDelay: 0.5
+  activationKeys: 65000000
+  useBlackTransition: 1
+  fadeDuration: 0.5
+  holdBlackDuration: 0.2
+  transitionSFX: {fileID: 0}
+  manualActivation: 0
 --- !u!61 &3483039259653959159
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -126,3 +133,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BGMPlayer
   bgmClip: {fileID: 0}
   loop: 1
+--- !u!114 &8716075469736899096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2217297012640897478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8a8d1c57e14f424fa8a7242803e5595, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneEntrance
+  fadeDuration: 0.5

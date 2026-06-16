@@ -14,9 +14,15 @@ public class BGMPlayer : MonoBehaviour
 
     private void Start()
     {
+        if (bgmClip == null)
+        {
+            Debug.LogWarning("BGMPlayer：bgmClip 未配置，跳过。", this);
+            return;
+        }
+
         if (AudioManager.Instance == null)
         {
-            Debug.LogWarning("AudioManager 未找到，BGM 不会播放。请确保场景中存在挂载 AudioManager 的 GameObject。");
+            Debug.LogWarning("BGMPlayer：AudioManager 未找到，BGM 不会播放。请确保场景中存在挂载 AudioManager 的 GameObject。");
             return;
         }
 
