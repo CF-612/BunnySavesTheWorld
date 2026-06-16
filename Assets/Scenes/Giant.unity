@@ -1509,7 +1509,7 @@ GameObject:
   - component: {fileID: 1512541598}
   - component: {fileID: 1512541597}
   - component: {fileID: 1512541596}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Giant_Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1550,7 +1550,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 2.4379606, y: -1.0930853}
+  m_Offset: {x: 2.5108783, y: -1.0930853}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -1560,7 +1560,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.200907, y: 4.137821}
+  m_Size: {x: 1.3467427, y: 4.137821}
   m_EdgeRadius: 0
 --- !u!212 &1512541597
 SpriteRenderer:
@@ -1630,8 +1630,8 @@ Transform:
   m_GameObject: {fileID: 1512541595}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.705068, w: -0.70913976}
-  m_LocalPosition: {x: -0.52, y: -7.25, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.81, y: -7.79, z: 0}
+  m_LocalScale: {x: 1.0696, y: 1.0696, z: 1.0696}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1741,7 +1741,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8179900976307126597, guid: 3fdba53dd18678e40a0ebe247230fd53, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.5
+      value: -3.69
       objectReference: {fileID: 0}
     - target: {fileID: 8179900976307126597, guid: 3fdba53dd18678e40a0ebe247230fd53, type: 3}
       propertyPath: m_LocalPosition.z
