@@ -58,6 +58,7 @@ MonoBehaviour:
   fadeDuration: 0.5
   holdBlackDuration: 0.2
   transitionSFX: {fileID: 0}
+  cutsceneBGM: {fileID: 0}
   manualActivation: 0
 --- !u!61 &3483039259653959159
 BoxCollider2D:
@@ -145,4 +146,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8a8d1c57e14f424fa8a7242803e5595, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneEntrance
-  fadeDuration: 0.5
+  fadeDuration: 1

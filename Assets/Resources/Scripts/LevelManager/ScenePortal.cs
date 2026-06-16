@@ -34,6 +34,10 @@ public class ScenePortal : MonoBehaviour
     [Tooltip("黑屏期间播放的音效（可选）")]
     public AudioClip transitionSFX;
 
+    [Header("过场剧情")]
+    [Tooltip("播放 storyUIs 期间切换为这段 BGM（可选），场景切换后由新场景 BGMPlayer 接管")]
+    public AudioClip cutsceneBGM;
+
     [Header("手动激活模式 Manual Activation")]
     [Tooltip("勾选后不会在 TriggerEnter 时自动响应按键，需要外部调用 EnablePortal() 激活")]
     public bool manualActivation = false;
@@ -120,6 +124,10 @@ public class ScenePortal : MonoBehaviour
 
         if (HasStoryUI())
         {
+            // 过场剧情开始时切换 BGM
+            if (cutsceneBGM != null && AudioManager.Instance != null)
+                AudioManager.Instance.PlayBGM(cutsceneBGM);
+
             playingStory = true;
             currentStoryIndex = -1;
             ShowNextStoryUI();
@@ -213,6 +221,13 @@ public class ScenePortal : MonoBehaviour
     public void DisablePortal()
     {
         isPortalActive = false;
+    }
+
+    /// <summary>程序化触发传送（跳过按键和范围检测）。供 BiteObjectiveTracker 等外部脚本调用。</summary>
+    public void TriggerNow()
+    {
+        if (!isTeleporting)
+            StartPortal();
     }
 
     #region 黑屏过渡内部方法
