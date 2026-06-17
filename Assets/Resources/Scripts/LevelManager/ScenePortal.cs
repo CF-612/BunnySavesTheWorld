@@ -101,7 +101,17 @@ public class ScenePortal : MonoBehaviour
 
         playerInRange = true;
 
-        if (!isTeleporting && !manualActivation && interactUI != null)
+        if (isTeleporting || manualActivation) return;
+
+        // 未配置任何按键 → 接触即传
+        if (activationKeys == null || activationKeys.Length == 0)
+        {
+            StartPortal();
+            return;
+        }
+
+        // 配置了按键 → 显示交互提示，等待按键
+        if (interactUI != null)
             interactUI.SetActive(true);
     }
 

@@ -49088,6 +49088,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7967401182537941848, guid: ce4d9bc32e3ba794a87e20c65c937ca0, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7967401182537941848, guid: ce4d9bc32e3ba794a87e20c65c937ca0, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8961751421553013793, guid: ce4d9bc32e3ba794a87e20c65c937ca0, type: 3}
       propertyPath: m_ConnectedAnchor.x
       value: 0.0022403002
@@ -49916,6 +49924,14 @@ PrefabInstance:
     - target: {fileID: 6184191786858039000, guid: ce4d9bc32e3ba794a87e20c65c937ca0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 25.952
+      objectReference: {fileID: 0}
+    - target: {fileID: 7967401182537941848, guid: ce4d9bc32e3ba794a87e20c65c937ca0, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7967401182537941848, guid: ce4d9bc32e3ba794a87e20c65c937ca0, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8961751421553013793, guid: ce4d9bc32e3ba794a87e20c65c937ca0, type: 3}
       propertyPath: m_ConnectedAnchor.x

@@ -53,7 +53,7 @@ MonoBehaviour:
   interactUI: {fileID: 0}
   storyUIs: []
   inputDelay: 0.5
-  activationKeys: 65000000
+  activationKeys: 
   useBlackTransition: 1
   fadeDuration: 0.5
   holdBlackDuration: 0.2
