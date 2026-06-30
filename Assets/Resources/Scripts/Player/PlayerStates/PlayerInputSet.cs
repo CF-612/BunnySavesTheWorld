@@ -136,6 +136,15 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""JumpDown"",
+                    ""type"": ""Button"",
+                    ""id"": ""7d72bbc6-7702-4c30-a3f3-8d2c2e972fc2"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -237,6 +246,17 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                     ""action"": ""Dig"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9fc26049-f2e5-4e3e-92ff-ec472426f9d7"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""JumpDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -250,6 +270,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         m_Player_Bite = m_Player.FindAction("Bite", throwIfNotFound: true);
         m_Player_Stomp = m_Player.FindAction("Stomp", throwIfNotFound: true);
         m_Player_Dig = m_Player.FindAction("Dig", throwIfNotFound: true);
+        m_Player_JumpDown = m_Player.FindAction("JumpDown", throwIfNotFound: true);
     }
 
     ~@PlayerInputSet()
@@ -335,6 +356,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Bite;
     private readonly InputAction m_Player_Stomp;
     private readonly InputAction m_Player_Dig;
+    private readonly InputAction m_Player_JumpDown;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -366,6 +388,10 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Dig".
         /// </summary>
         public InputAction @Dig => m_Wrapper.m_Player_Dig;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/JumpDown".
+        /// </summary>
+        public InputAction @JumpDown => m_Wrapper.m_Player_JumpDown;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -407,6 +433,9 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
             @Dig.started += instance.OnDig;
             @Dig.performed += instance.OnDig;
             @Dig.canceled += instance.OnDig;
+            @JumpDown.started += instance.OnJumpDown;
+            @JumpDown.performed += instance.OnJumpDown;
+            @JumpDown.canceled += instance.OnJumpDown;
         }
 
         /// <summary>
@@ -433,6 +462,9 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
             @Dig.started -= instance.OnDig;
             @Dig.performed -= instance.OnDig;
             @Dig.canceled -= instance.OnDig;
+            @JumpDown.started -= instance.OnJumpDown;
+            @JumpDown.performed -= instance.OnJumpDown;
+            @JumpDown.canceled -= instance.OnJumpDown;
         }
 
         /// <summary>
@@ -508,5 +540,12 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDig(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "JumpDown" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnJumpDown(InputAction.CallbackContext context);
     }
 }

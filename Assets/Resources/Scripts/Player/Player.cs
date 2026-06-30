@@ -34,6 +34,15 @@ public class Player : Entity
     public float AirStompVelocity = 25f;
     public float DigSpeed = 2f;
 
+    [Header("风力交互")]
+    public PlayerWindReceiver windReceiver { get; private set; }
+
+    [Header("单向平台下落")]
+    [Tooltip("下落穿过平台后恢复碰撞的延迟（秒）")]
+    public float dropThroughDuration = 0.4f;
+
+    private Coroutine dropThroughCoroutine;
+
     [Header("啃咬检测")]
     public Transform BiteCheck;
     public float BiteCheckRadius = 0.7f;
@@ -68,6 +77,8 @@ public class Player : Entity
         base.Awake();
 
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        windReceiver = GetComponent<PlayerWindReceiver>();
 
         input = new PlayerInputSet();
         groundCheck = transform;
@@ -193,4 +204,46 @@ public class Player : Entity
 
     public void Revive()
     {}
+
+    /// <summary>尝试从单向平台下落。由 GroundedState 在 JumpDown 按下时调用。</summary>
+    public void TryDropThroughPlatform()
+    {
+        // 向下射线检测脚下的平台
+        float checkDist = 1.5f;
+        RaycastHit2D hit = Physics2D.Raycast(
+            groundCheck.position, Vector2.down, checkDist, whatIsGround);
+
+        if (hit.collider == null) return;
+
+        // 确认是单向平台（有 PlatformEffector2D 且 useOneWay 启用）
+        PlatformEffector2D effector = hit.collider.GetComponent<PlatformEffector2D>();
+        if (effector == null || !effector.useOneWay) return;
+
+        if (dropThroughCoroutine != null)
+            StopCoroutine(dropThroughCoroutine);
+
+        dropThroughCoroutine = StartCoroutine(DropThroughCo(hit.collider));
+    }
+
+    private System.Collections.IEnumerator DropThroughCo(Collider2D platformCollider)
+    {
+        // 对玩家所有非 Trigger 碰撞体忽略与平台的碰撞
+        Collider2D[] cols = GetComponentsInChildren<Collider2D>();
+        foreach (var col in cols)
+        {
+            if (col != null && !col.isTrigger)
+                Physics2D.IgnoreCollision(col, platformCollider, true);
+        }
+
+        yield return new WaitForSeconds(dropThroughDuration);
+
+        // 恢复碰撞
+        foreach (var col in cols)
+        {
+            if (col != null && !col.isTrigger)
+                Physics2D.IgnoreCollision(col, platformCollider, false);
+        }
+
+        dropThroughCoroutine = null;
+    }
 }

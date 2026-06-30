@@ -18,6 +18,10 @@ public class Entity : MonoBehaviour
     [SerializeField] private float wallCheckDistance;
     [SerializeField] protected Transform groundCheck;
     [SerializeField] protected Transform wallCheck;
+
+    [Header("翻转设置")]
+    [Tooltip("水平速度绝对值小于此值时不会触发翻转，防止外部力（如风力）与输入抵消时产生朝向闪动。")]
+    [SerializeField] private float flipDeadZone = 0.05f;
     public bool isGround { get; private set; }
     public bool isWall { get; private set; }
     public bool hasWall { get; private set; }
@@ -92,6 +96,11 @@ public class Entity : MonoBehaviour
 
     public void HandleFlip(float xVelocity)
     {
+        // 死区阈值：当水平速度接近零时不触发翻转，
+        // 防止外部力（如风力）与玩家输入抵消时产生的朝向鬼畜闪动
+        if (Mathf.Abs(xVelocity) < flipDeadZone)
+            return;
+
         if (xVelocity > 0 && facingDir != 1)
             Flip();
         else if (xVelocity < 0 && facingDir != -1)

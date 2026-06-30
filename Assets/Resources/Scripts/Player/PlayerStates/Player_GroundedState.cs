@@ -26,6 +26,10 @@ public class Player_GroundedState : PlayerState
         if (input.Player.Stomp.WasPressedThisFrame())
             stateMachine.ChangeState(player.groundStompState);
 
+        // 单向平台下落（S 键）
+        if (input.Player.JumpDown.WasPressedThisFrame())
+            player.TryDropThroughPlatform();
+
         // 刨坑 (此处可能需要结合向下方向键或特定输入)
         if (input.Player.Dig.IsPressed())
             stateMachine.ChangeState(player.digState);

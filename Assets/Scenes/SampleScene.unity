@@ -119,6 +119,115 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &72899472
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 41845875786553324, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 7.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 41845875786553324, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 41845875786553324, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 41845875786553324, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 41845875786553324, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 41845875786553324, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 41845875786553324, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 41845875786553324, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 41845875786553324, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 41845875786553324, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5729758049741553032, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: m_Name
+      value: Blower (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: maxWindForce
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: overrideDirection
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: minApproachNormalized
+      value: 0.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: groundResistMultiplier
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: windForceCurve.m_Curve.Array.data[1].time
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: windForceCurve.m_Curve.Array.data[0].value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: windForceCurve.m_Curve.Array.data[1].value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: windForceCurve.m_Curve.Array.data[0].inSlope
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: windForceCurve.m_Curve.Array.data[1].inSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: windForceCurve.m_Curve.Array.data[0].outSlope
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: windForceCurve.m_Curve.Array.data[1].inWeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: windForceCurve.m_Curve.Array.data[1].outSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: windForceCurve.m_Curve.Array.data[0].outWeight
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
 --- !u!4 &93570418 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8179900976307126597, guid: 3fdba53dd18678e40a0ebe247230fd53, type: 3}
@@ -217,6 +326,9 @@ MonoBehaviour:
   maxBiteResistance: 2
   damageVFXPrefabs: []
   sparkVFXPrefab: {fileID: 0}
+  onWireBroken:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!233 &355993388
 HingeJoint2D:
   m_ObjectHideFlags: 0
@@ -392,6 +504,9 @@ MonoBehaviour:
   maxBiteResistance: 2
   damageVFXPrefabs: []
   sparkVFXPrefab: {fileID: 0}
+  onWireBroken:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!233 &508650605
 HingeJoint2D:
   m_ObjectHideFlags: 0
@@ -543,6 +658,9 @@ MonoBehaviour:
   maxBiteResistance: 2
   damageVFXPrefabs: []
   sparkVFXPrefab: {fileID: 0}
+  onWireBroken:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!233 &565565821
 HingeJoint2D:
   m_ObjectHideFlags: 0
@@ -837,6 +955,9 @@ MonoBehaviour:
   maxBiteResistance: 2
   damageVFXPrefabs: []
   sparkVFXPrefab: {fileID: 0}
+  onWireBroken:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!233 &861161432
 HingeJoint2D:
   m_ObjectHideFlags: 0
@@ -1030,6 +1151,9 @@ MonoBehaviour:
   maxBiteResistance: 2
   damageVFXPrefabs: []
   sparkVFXPrefab: {fileID: 0}
+  onWireBroken:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!233 &1110051649
 HingeJoint2D:
   m_ObjectHideFlags: 0
@@ -1170,6 +1294,9 @@ MonoBehaviour:
   maxBiteResistance: 2
   damageVFXPrefabs: []
   sparkVFXPrefab: {fileID: 0}
+  onWireBroken:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!233 &1179390166
 HingeJoint2D:
   m_ObjectHideFlags: 0
@@ -1281,6 +1408,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BouncyPlatform
   bounceForce: 10
+  bounceSFXPath: Audio/SFX/BunnyJump/Jump1
   anim: {fileID: 0}
   animTriggerName: bounce
 --- !u!50 &1205506401
@@ -1492,6 +1620,9 @@ MonoBehaviour:
   maxBiteResistance: 2
   damageVFXPrefabs: []
   sparkVFXPrefab: {fileID: 0}
+  onWireBroken:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!233 &1267018185
 HingeJoint2D:
   m_ObjectHideFlags: 0
@@ -1798,6 +1929,9 @@ MonoBehaviour:
   maxBiteResistance: 2
   damageVFXPrefabs: []
   sparkVFXPrefab: {fileID: 0}
+  onWireBroken:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!233 &1526642063
 HingeJoint2D:
   m_ObjectHideFlags: 0
@@ -1911,6 +2045,9 @@ MonoBehaviour:
   maxBiteResistance: 2
   damageVFXPrefabs: []
   sparkVFXPrefab: {fileID: 0}
+  onWireBroken:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!233 &1841408528
 HingeJoint2D:
   m_ObjectHideFlags: 0
@@ -2177,6 +2314,9 @@ MonoBehaviour:
   maxBiteResistance: 2
   damageVFXPrefabs: []
   sparkVFXPrefab: {fileID: 0}
+  onWireBroken:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!233 &1976123975
 HingeJoint2D:
   m_ObjectHideFlags: 0
@@ -2865,6 +3005,58 @@ PrefabInstance:
       propertyPath: m_Name
       value: Blower
       objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: maxWindForce
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: overrideDirection
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: minApproachNormalized
+      value: 0.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: groundResistMultiplier
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: windForceCurve.m_Curve.Array.data[1].time
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: windForceCurve.m_Curve.Array.data[0].value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: windForceCurve.m_Curve.Array.data[1].value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: windForceCurve.m_Curve.Array.data[0].inSlope
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: windForceCurve.m_Curve.Array.data[1].inSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: windForceCurve.m_Curve.Array.data[0].outSlope
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: windForceCurve.m_Curve.Array.data[1].inWeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: windForceCurve.m_Curve.Array.data[1].outSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413844153678155582, guid: c9ec7f903c41fb44babfde0f5aeb0615, type: 3}
+      propertyPath: windForceCurve.m_Curve.Array.data[0].outWeight
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2879,6 +3071,7 @@ SceneRoots:
   - {fileID: 4038840535113800816}
   - {fileID: 8098902592396171356}
   - {fileID: 8261916238819650302}
+  - {fileID: 72899472}
   - {fileID: 914380050}
   - {fileID: 139989006}
   - {fileID: 5149410146212390306}
