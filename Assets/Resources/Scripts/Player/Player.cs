@@ -18,6 +18,7 @@ public class Player : Entity
     public Player_DigState digState { get; private set; }
     public Player_AirStompState airStompState { get; private set; }
     public Player_GlideState glideState { get; private set; }
+    public Player_ChargedJumpState chargedJumpState { get; private set; }
     public Player_PipeState pipeState { get; private set; }
     public Player_DeadState deadState { get; private set; }
 
@@ -28,6 +29,11 @@ public class Player : Entity
     public float JumpForce = 15f;
     [Range(0,1)]
     public float InAirMoveMultiplier = 0.8f;
+
+    [Header("蓄力跳跃参数")]
+    public float MaxChargeJumpForce = 25f;
+    public float MaxChargeTime = 1f;
+    public float ChargeThreshold = 0.1f;
     
     [Header("特殊能力参数")]
     public float GlideGravityScale = 0.5f;
@@ -95,6 +101,7 @@ public class Player : Entity
         digState = new Player_DigState(this, stateMachine, "dig");
         airStompState = new Player_AirStompState(this, stateMachine, "airStomp");
         glideState = new Player_GlideState(this, stateMachine, "glide");
+        chargedJumpState = new Player_ChargedJumpState(this, stateMachine, "chargeJump");
         pipeState = new Player_PipeState(this, stateMachine, "");
         deadState = new Player_DeadState(this, stateMachine, "dead");
     }
