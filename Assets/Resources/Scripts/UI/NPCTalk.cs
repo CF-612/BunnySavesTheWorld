@@ -1,7 +1,8 @@
-﻿using NodeCanvas.DialogueTrees;
+using NodeCanvas.DialogueTrees;
 using NodeCanvas.DialogueTrees.UI.Examples;
 using UnityEngine;
 
+/// <summary>Player-facing adapter for a NodeCanvas dialogue owned by an NPC.</summary>
 public class NPCTalk : MonoBehaviour
 {
     [Header("要显示/隐藏的文字物体 Text Object")]
@@ -14,126 +15,130 @@ public class NPCTalk : MonoBehaviour
     [SerializeField] private DialogueTreeController dialogue;
 
     [Header("玩家朝向设置 Player Facing")]
-    public Transform playerVisual; // 拖玩家身上负责显示美术的物体；没有就拖玩家自己
-    public bool playerDefaultFaceRight = true; // 玩家美术默认是否面朝右
+    public Transform playerVisual;
+    public bool playerDefaultFaceRight = true;
 
     [Header("NPC朝向设置 NPC Facing")]
-    public Transform npcVisual; // 拖 NPC 身上负责显示美术的物体；没有就拖 NPC 自己
-    public bool npcDefaultFaceRight = true; // NPC 美术默认是否面朝右
+    public Transform npcVisual;
+    public bool npcDefaultFaceRight = true;
 
     private bool playerInRange;
-    private DialogueUGUI ugui;
+    private bool ownsDialogue;
+    private DialogueUGUI dialogueUi;
     private Transform currentPlayer;
+    private Player currentPlayerController;
 
-    private void Start()
+    private void Awake()
     {
-        if (textObject != null)
-            textObject.SetActive(false);
-
         if (dialogue == null)
             dialogue = GetComponent<DialogueTreeController>();
-
         if (npcVisual == null)
             npcVisual = transform;
 
-        ugui = FindObjectOfType<DialogueUGUI>();
+        dialogueUi = FindAnyObjectByType<DialogueUGUI>(FindObjectsInactive.Include);
+        SetPromptVisible(false);
     }
 
     private void Update()
     {
-        bool isTalking = ugui != null && ugui.isTalking;
+        bool anotherDialogueIsPlaying = dialogueUi != null && dialogueUi.isTalking && !ownsDialogue;
+        SetPromptVisible(playerInRange && !ownsDialogue && !anotherDialogueIsPlaying);
 
-        // 没有对话时，玩家在范围内才显示“按E对话”
-        if (playerInRange && !isTalking)
-            ShowText();
-        else
-            HideText();
+        if (playerInRange && !ownsDialogue && !anotherDialogueIsPlaying && Input.GetKeyDown(KeyCode.E))
+            StartDialogue();
+    }
 
-        // 按 E 开始对话：玩家和 NPC 同时转向对方
-        if (playerInRange && !isTalking && Input.GetKeyDown(KeyCode.E))
+    private void StartDialogue()
+    {
+        if (dialogue == null)
         {
-            FacePlayerToNPC();
-            FaceNPCToPlayer();
-
-            if (dialogue != null)
-            {
-                dialogue.StartDialogue();
-                HideText();
-            }
-            else
-            {
-                Debug.LogWarning("NPCTalk：DialogueTreeController 没有拖，也没有挂在当前物体上。");
-            }
+            Debug.LogWarning("NPCTalk：DialogueTreeController 未配置。", this);
+            return;
         }
+
+        FacePlayerToNpc();
+        FaceNpcToPlayer();
+        ownsDialogue = true;
+        currentPlayerController?.AcquireInputLock(this);
+        SetPromptVisible(false);
+        dialogue.StartDialogue(_ => CompleteDialogue());
+    }
+
+    private void CompleteDialogue()
+    {
+        ownsDialogue = false;
+        currentPlayerController?.ReleaseInputLock(this);
+        SetPromptVisible(playerInRange);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag(playerTag))
-        {
-            playerInRange = true;
-            currentPlayer = other.transform;
+        if (!other.CompareTag(playerTag))
+            return;
 
-            if (playerVisual == null)
-                playerVisual = currentPlayer;
-        }
+        playerInRange = true;
+        currentPlayer = other.transform;
+        currentPlayerController = other.GetComponentInParent<Player>();
+        if (playerVisual == null)
+            playerVisual = currentPlayer;
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag(playerTag))
+        if (!other.CompareTag(playerTag))
+            return;
+
+        playerInRange = false;
+        SetPromptVisible(false);
+
+        if (!ownsDialogue)
         {
-            playerInRange = false;
             currentPlayer = null;
-            HideText();
+            currentPlayerController = null;
         }
     }
 
-    private void FacePlayerToNPC()
+    private void OnDisable()
     {
-        if (currentPlayer == null || playerVisual == null) return;
+        bool shouldStopDialogue = ownsDialogue;
+        ownsDialogue = false;
 
-        // NPC 在玩家右边，玩家应该面朝右；NPC 在玩家左边，玩家应该面朝左
-        bool npcOnRight = transform.position.x > currentPlayer.position.x;
+        if (shouldStopDialogue && dialogue != null)
+            dialogue.StopDialogue();
 
-        Vector3 scale = playerVisual.localScale;
-        float absX = Mathf.Abs(scale.x);
-
-        if (playerDefaultFaceRight)
-            scale.x = npcOnRight ? absX : -absX;
-        else
-            scale.x = npcOnRight ? -absX : absX;
-
-        playerVisual.localScale = scale;
+        currentPlayerController?.ReleaseInputLock(this);
+        SetPromptVisible(false);
     }
 
-    private void FaceNPCToPlayer()
+    private void FacePlayerToNpc()
     {
-        if (currentPlayer == null || npcVisual == null) return;
+        if (currentPlayer == null || playerVisual == null)
+            return;
 
-        // 玩家在 NPC 右边，NPC 应该面朝右；玩家在 NPC 左边，NPC 应该面朝左
-        bool playerOnRight = currentPlayer.position.x > transform.position.x;
-
-        Vector3 scale = npcVisual.localScale;
-        float absX = Mathf.Abs(scale.x);
-
-        if (npcDefaultFaceRight)
-            scale.x = playerOnRight ? absX : -absX;
-        else
-            scale.x = playerOnRight ? -absX : absX;
-
-        npcVisual.localScale = scale;
+        bool targetOnRight = transform.position.x > currentPlayer.position.x;
+        SetFacing(playerVisual, targetOnRight, playerDefaultFaceRight);
     }
 
-    private void ShowText()
+    private void FaceNpcToPlayer()
     {
-        if (textObject != null)
-            textObject.SetActive(true);
+        if (currentPlayer == null || npcVisual == null)
+            return;
+
+        bool targetOnRight = currentPlayer.position.x > transform.position.x;
+        SetFacing(npcVisual, targetOnRight, npcDefaultFaceRight);
     }
 
-    private void HideText()
+    private static void SetFacing(Transform visual, bool targetOnRight, bool defaultFacesRight)
     {
-        if (textObject != null)
-            textObject.SetActive(false);
+        Vector3 scale = visual.localScale;
+        float absoluteX = Mathf.Abs(scale.x);
+        scale.x = targetOnRight == defaultFacesRight ? absoluteX : -absoluteX;
+        visual.localScale = scale;
+    }
+
+    private void SetPromptVisible(bool visible)
+    {
+        if (textObject != null && textObject.activeSelf != visible)
+            textObject.SetActive(visible);
     }
 }

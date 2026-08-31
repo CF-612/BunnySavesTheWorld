@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
+/// <summary>Scene-local owner for checkpoint selection and death/respawn orchestration.</summary>
 public class LevelManager : MonoBehaviour
 {
     [Header("引用")]
@@ -12,13 +14,27 @@ public class LevelManager : MonoBehaviour
 
     private Vector3 respawnPosition;
     private bool isRespawning;
+    private bool resumeAtCheckpoint;
 
     private void Awake()
     {
+        if (player == null)
+            player = FindAnyObjectByType<Player>();
+
         if (player != null)
-        {
             respawnPosition = player.transform.position;
-        }
+
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (GameProgressService.TryGetCheckpoint(sceneName, out Vector3 savedPosition))
+            respawnPosition = savedPosition;
+
+        resumeAtCheckpoint = GameProgressService.ConsumeCheckpointRespawnRequest(sceneName);
+    }
+
+    private void Start()
+    {
+        if (resumeAtCheckpoint && player != null)
+            player.TeleportTo(respawnPosition);
     }
 
     private void OnEnable()
@@ -29,36 +45,49 @@ public class LevelManager : MonoBehaviour
     private void OnDisable()
     {
         Player.OnPlayerDeath -= OnPlayerDeath;
+        StopAllCoroutines();
+        isRespawning = false;
     }
 
-    /// <summary>由 CheckPoint 调用，更新重生点为检查点位置</summary>
+    public void SetCheckpoint(CheckPoint checkpoint)
+    {
+        if (checkpoint == null)
+            return;
+
+        respawnPosition = checkpoint.RespawnPosition;
+        GameProgressService.ActivateCheckpoint(
+            checkpoint.CheckpointId,
+            SceneManager.GetActiveScene().name,
+            respawnPosition);
+    }
+
+    /// <summary>Compatibility entry point for existing UnityEvents and older checkpoint scripts.</summary>
     public void SetCheckpoint(Vector3 position)
     {
         respawnPosition = position;
+        GameProgressService.RecordPlayerPosition(SceneManager.GetActiveScene().name, position);
     }
 
     private void OnPlayerDeath()
     {
-        if (isRespawning) return;
+        if (isRespawning || player == null)
+            return;
 
         isRespawning = true;
-        StartCoroutine(RespawnCoroutine());
+        StartCoroutine(RespawnRoutine());
     }
 
-    private IEnumerator RespawnCoroutine()
+    private IEnumerator RespawnRoutine()
     {
-        // 第一阶段：等待死亡动画播放
-        yield return new WaitForSeconds(deathAnimDuration);
+        if (deathAnimDuration > 0f)
+            yield return new WaitForSeconds(deathAnimDuration);
 
-        // 隐藏玩家视觉
         player.HideVisual();
 
-        // 第二阶段：死亡停留时间
-        yield return new WaitForSeconds(player.RespawnDelay);
+        if (player.RespawnDelay > 0f)
+            yield return new WaitForSeconds(player.RespawnDelay);
 
-        // 在检查点重生
         player.Respawn(respawnPosition);
-
         isRespawning = false;
     }
 }

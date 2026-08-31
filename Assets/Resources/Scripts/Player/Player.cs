@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
+using UnityEngine.InputSystem;
 using UnityEngine;
 
 public class Player : Entity
 {
     public static event Action OnPlayerDeath;
     public PlayerInputSet input { get; private set; }
+    public bool IsDead { get; private set; }
     
     // 基础状态
     public Player_idleState idleState { get; private set; }
@@ -77,6 +80,7 @@ public class Player : Entity
     public Vector2 moveInput { get; private set; }
 
     private SpriteRenderer spriteRenderer;
+    private readonly HashSet<object> inputLockOwners = new HashSet<object>();
 
     protected override void Awake()
     {
@@ -87,6 +91,8 @@ public class Player : Entity
         windReceiver = GetComponent<PlayerWindReceiver>();
 
         input = new PlayerInputSet();
+        input.Player.Movement.performed += OnMovementPerformed;
+        input.Player.Movement.canceled += OnMovementCanceled;
         groundCheck = transform;
 
         // 实例化基础状态
@@ -114,6 +120,11 @@ public class Player : Entity
 
     public override void EntityDeath()
     {
+        if (IsDead)
+            return;
+
+        IsDead = true;
+        AcquireInputLock(this);
         base.EntityDeath();
 
         OnPlayerDeath?.Invoke();
@@ -122,15 +133,69 @@ public class Player : Entity
 
     private void OnEnable()
     {
-        input.Enable();
-
-        input.Player.Movement.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        input.Player.Movement.canceled += ctx => moveInput = Vector2.zero;
+        RefreshInputState();
     }
 
     private void OnDisable()
     {
         input.Disable();
+    }
+
+    private void OnDestroy()
+    {
+        if (input == null)
+            return;
+
+        input.Player.Movement.performed -= OnMovementPerformed;
+        input.Player.Movement.canceled -= OnMovementCanceled;
+        input.Dispose();
+    }
+
+    private void OnMovementPerformed(InputAction.CallbackContext context)
+    {
+        moveInput = context.ReadValue<Vector2>();
+    }
+
+    private void OnMovementCanceled(InputAction.CallbackContext context)
+    {
+        moveInput = Vector2.zero;
+    }
+
+    /// <summary>
+    /// Adds an owner-specific control lock. Input is enabled only after every active owner releases it,
+    /// so a dialogue ending cannot accidentally override a simultaneous death or cutscene lock.
+    /// </summary>
+    public void AcquireInputLock(object owner)
+    {
+        if (owner == null)
+            return;
+
+        inputLockOwners.Add(owner);
+        RefreshInputState();
+    }
+
+    /// <summary>Releases only the lock acquired by the supplied owner.</summary>
+    public void ReleaseInputLock(object owner)
+    {
+        if (owner == null)
+            return;
+
+        inputLockOwners.Remove(owner);
+        RefreshInputState();
+    }
+
+    private void RefreshInputState()
+    {
+        if (input == null)
+            return;
+
+        if (isActiveAndEnabled && inputLockOwners.Count == 0)
+            input.Enable();
+        else
+        {
+            moveInput = Vector2.zero;
+            input.Disable();
+        }
     }
     public void DetectBiteable()
     {
@@ -191,6 +256,7 @@ public class Player : Entity
     {
         transform.position = spawnPosition;
         ShowVisual();
+        IsDead = false;
 
         // 恢复物理模拟
         rb.simulated = true;
@@ -201,12 +267,19 @@ public class Player : Entity
         if (col != null)
             col.enabled = true;
 
-        // 重新启用输入
-        input.Enable();
+        ReleaseInputLock(this);
 
         // 解锁状态机并切回闲置状态
         stateMachine.CanChangeState = true;
         stateMachine.ChangeState(idleState);
+    }
+
+    /// <summary>Moves the player during scene setup without changing the current state.</summary>
+    public void TeleportTo(Vector3 position)
+    {
+        transform.position = position;
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
     }
 
     public void Revive()

@@ -1,7 +1,4 @@
-using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class ScenePortal : MonoBehaviour
 {
@@ -22,11 +19,11 @@ public class ScenePortal : MonoBehaviour
 
     [Header("激活按键 Activation Keys")]
     [Tooltip("触发场景切换的按键，默认只有 E。可改为 ↑/W 等")]
-    public KeyCode[] activationKeys = new KeyCode[] { KeyCode.E };
+    public KeyCode[] activationKeys = { KeyCode.E };
 
     [Header("黑屏过渡")]
     [Tooltip("勾选后切换场景时播放黑屏淡入淡出动画")]
-    public bool useBlackTransition = false;
+    public bool useBlackTransition;
     [Tooltip("淡入/淡出时长（秒）")]
     public float fadeDuration = 1f;
     [Tooltip("全黑停留时长（秒）")]
@@ -40,261 +37,138 @@ public class ScenePortal : MonoBehaviour
 
     [Header("手动激活模式 Manual Activation")]
     [Tooltip("勾选后不会在 TriggerEnter 时自动响应按键，需要外部调用 EnablePortal() 激活")]
-    public bool manualActivation = false;
+    public bool manualActivation;
 
-    private bool playerInRange = false;
-    private bool isTeleporting = false;
-    private bool playingStory = false;
+    private bool playerInRange;
+    private bool isTeleporting;
+    private bool playingStory;
     private bool isPortalActive = true;
-    private int currentStoryIndex = -1;
-    private float timer = 0f;
+    private float inputTimer;
+    private StorySequence storySequence;
 
     private void Start()
     {
-        if (interactUI != null)
-            interactUI.SetActive(false);
+        storySequence = new StorySequence(storyUIs);
+        storySequence.ResetAndHide();
+        SetInteractVisible(false);
 
         if (manualActivation)
             isPortalActive = false;
-
-        HideAllStoryUIs();
     }
 
     private void Update()
     {
         if (playingStory)
         {
-            timer += Time.deltaTime;
-
-            if (timer >= inputDelay && Input.anyKeyDown)
-            {
-                ShowNextStoryUI();
-            }
-
+            inputTimer += Time.unscaledDeltaTime;
+            if (inputTimer >= inputDelay && Input.anyKeyDown)
+                ShowNextStoryPage();
             return;
         }
 
-        if (!isPortalActive) return;
-
-        if (playerInRange && !isTeleporting && IsActivationKeyDown())
-        {
+        if (isPortalActive && playerInRange && !isTeleporting && IsActivationKeyDown())
             StartPortal();
-        }
     }
 
     private bool IsActivationKeyDown()
     {
         if (activationKeys == null || activationKeys.Length == 0)
-            return Input.GetKeyDown(KeyCode.E);
+            return false;
 
-        foreach (var key in activationKeys)
+        for (int i = 0; i < activationKeys.Length; i++)
         {
-            if (Input.GetKeyDown(key))
+            if (Input.GetKeyDown(activationKeys[i]))
                 return true;
         }
+
         return false;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.CompareTag(playerTag)) return;
+        if (!other.CompareTag(playerTag))
+            return;
 
         playerInRange = true;
-
-        if (isTeleporting || manualActivation) return;
-
-        // 未配置任何按键 → 接触即传
-        if (activationKeys == null || activationKeys.Length == 0)
-        {
-            StartPortal();
+        if (isTeleporting || manualActivation || !isPortalActive)
             return;
-        }
 
-        // 配置了按键 → 显示交互提示，等待按键
-        if (interactUI != null)
-            interactUI.SetActive(true);
+        if (activationKeys == null || activationKeys.Length == 0)
+            StartPortal();
+        else
+            SetInteractVisible(true);
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (!other.CompareTag(playerTag)) return;
+        if (!other.CompareTag(playerTag))
+            return;
 
         playerInRange = false;
-
-        if (!isTeleporting && interactUI != null)
-            interactUI.SetActive(false);
+        if (!isTeleporting)
+            SetInteractVisible(false);
     }
 
     private void StartPortal()
     {
+        if (isTeleporting || SceneTransitionService.IsTransitioning)
+            return;
+
         isTeleporting = true;
+        SetInteractVisible(false);
 
-        if (interactUI != null)
-            interactUI.SetActive(false);
-
-        if (HasStoryUI())
+        if (storySequence != null && storySequence.HasPages)
         {
-            // 过场剧情开始时切换 BGM
             if (cutsceneBGM != null && AudioManager.Instance != null)
                 AudioManager.Instance.PlayBGM(cutsceneBGM);
 
             playingStory = true;
-            currentStoryIndex = -1;
-            ShowNextStoryUI();
-        }
-        else
-        {
-            StartCoroutine(DoTransition());
-        }
-    }
-
-    private IEnumerator DoTransition()
-    {
-        if (useBlackTransition)
-        {
-            Canvas fadeCanvas = CreateFadeCanvas();
-            Image fadeImage = fadeCanvas.GetComponentInChildren<Image>();
-
-            if (fadeImage == null)
-            {
-                SceneManager.LoadScene(targetSceneName);
-                yield break;
-            }
-
-            yield return StartCoroutine(FadeImage(fadeImage, 0f, 1f, fadeDuration));
-
-            if (transitionSFX != null && AudioManager.Instance != null)
-                AudioManager.Instance.PlaySFX(transitionSFX);
-
-            yield return new WaitForSeconds(holdBlackDuration);
-        }
-
-        SceneManager.LoadScene(targetSceneName);
-    }
-
-    private void ShowNextStoryUI()
-    {
-        int nextIndex = currentStoryIndex + 1;
-
-        while (nextIndex < storyUIs.Length && storyUIs[nextIndex] == null)
-        {
-            nextIndex++;
-        }
-
-        if (nextIndex >= storyUIs.Length)
-        {
-            StartCoroutine(DoTransition());
+            ShowNextStoryPage();
             return;
         }
 
-        if (currentStoryIndex >= 0 && currentStoryIndex < storyUIs.Length)
-        {
-            if (storyUIs[currentStoryIndex] != null)
-                storyUIs[currentStoryIndex].SetActive(false);
-        }
-
-        currentStoryIndex = nextIndex;
-        timer = 0f;
-
-        storyUIs[currentStoryIndex].SetActive(true);
+        BeginSceneTransition();
     }
 
-    private bool HasStoryUI()
+    private void ShowNextStoryPage()
     {
-        if (storyUIs == null || storyUIs.Length == 0) return false;
+        inputTimer = 0f;
+        if (storySequence.ShowNext())
+            return;
 
-        for (int i = 0; i < storyUIs.Length; i++)
-        {
-            if (storyUIs[i] != null)
-                return true;
-        }
-
-        return false;
+        playingStory = false;
+        BeginSceneTransition();
     }
 
-    private void HideAllStoryUIs()
+    private void BeginSceneTransition()
     {
-        if (storyUIs == null) return;
+        float duration = useBlackTransition ? fadeDuration : 0f;
+        float hold = useBlackTransition ? holdBlackDuration : 0f;
+        SceneTransitionService.LoadScene(targetSceneName, duration, hold, duration, transitionSFX);
+    }
 
-        for (int i = 0; i < storyUIs.Length; i++)
-        {
-            if (storyUIs[i] != null)
-                storyUIs[i].SetActive(false);
-        }
+    private void SetInteractVisible(bool visible)
+    {
+        if (interactUI != null)
+            interactUI.SetActive(visible);
     }
 
     public void EnablePortal()
     {
         isPortalActive = true;
+        if (playerInRange && activationKeys != null && activationKeys.Length > 0)
+            SetInteractVisible(true);
     }
 
     public void DisablePortal()
     {
         isPortalActive = false;
+        SetInteractVisible(false);
     }
 
-    /// <summary>程序化触发传送（跳过按键和范围检测）。供 BiteObjectiveTracker 等外部脚本调用。</summary>
     public void TriggerNow()
     {
         if (!isTeleporting)
             StartPortal();
     }
-
-    #region 黑屏过渡内部方法
-
-    /// <summary>在当前场景动态创建一个全屏黑 Canvas（淡出前用，随场景一起销毁）</summary>
-    private Canvas CreateFadeCanvas()
-    {
-        GameObject canvasGO = new GameObject("FadeOutCanvas");
-        Canvas canvas = canvasGO.AddComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 9999;
-
-        CanvasScaler scaler = canvasGO.AddComponent<CanvasScaler>();
-        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(1920, 1080);
-        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-        scaler.matchWidthOrHeight = 0.5f;
-
-        GameObject imageGO = new GameObject("BlackImage");
-        imageGO.transform.SetParent(canvasGO.transform);
-
-        Image image = imageGO.AddComponent<Image>();
-        image.color = Color.clear;
-        image.raycastTarget = false;
-
-        RectTransform rect = image.rectTransform;
-        rect.anchorMin = Vector2.zero;
-        rect.anchorMax = Vector2.one;
-        rect.offsetMin = Vector2.zero;
-        rect.offsetMax = Vector2.zero;
-
-        return canvas;
-    }
-
-    private IEnumerator FadeImage(Image image, float from, float to, float duration)
-    {
-        float elapsed = 0f;
-
-        SetAlpha(image, from);
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.unscaledDeltaTime;
-            SetAlpha(image, Mathf.Lerp(from, to, elapsed / duration));
-            yield return null;
-        }
-
-        SetAlpha(image, to);
-    }
-
-    private static void SetAlpha(Image image, float alpha)
-    {
-        if (image == null) return;
-        Color c = image.color;
-        c.a = alpha;
-        image.color = c;
-    }
-
-    #endregion
 }
