@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-/// <summary>Scene-local owner for checkpoint selection and death/respawn orchestration.</summary>
+/// <summary>负责当前场景内的检查点选择，以及死亡与重生流程协调。</summary>
 public class LevelManager : MonoBehaviour
 {
     [Header("引用")]
@@ -61,7 +61,7 @@ public class LevelManager : MonoBehaviour
             respawnPosition);
     }
 
-    /// <summary>Compatibility entry point for existing UnityEvents and older checkpoint scripts.</summary>
+    /// <summary>为现有 UnityEvent 和旧检查点脚本保留的兼容入口。</summary>
     public void SetCheckpoint(Vector3 position)
     {
         respawnPosition = position;

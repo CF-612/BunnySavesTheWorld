@@ -1,6 +1,6 @@
 using UnityEngine;
 
-/// <summary>Small reusable state object for the existing GameObject-based story pages.</summary>
+/// <summary>管理现有 GameObject 剧情页顺序与显隐状态的轻量可复用对象。</summary>
 public sealed class StorySequence
 {
     private readonly GameObject[] pages;
@@ -41,7 +41,7 @@ public sealed class StorySequence
         }
     }
 
-    /// <returns>True when another page was shown; false when the sequence is complete.</returns>
+    /// <returns>成功显示下一页时返回 true；全部页面播放完毕时返回 false。</returns>
     public bool ShowNext()
     {
         if (pages == null)

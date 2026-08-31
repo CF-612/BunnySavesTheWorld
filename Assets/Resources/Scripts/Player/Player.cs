@@ -162,8 +162,8 @@ public class Player : Entity
     }
 
     /// <summary>
-    /// Adds an owner-specific control lock. Input is enabled only after every active owner releases it,
-    /// so a dialogue ending cannot accidentally override a simultaneous death or cutscene lock.
+    /// 为指定持有者添加输入锁。只有所有持有者都释放输入锁后，玩家输入才会恢复，
+    /// 从而避免对话结束时错误解除死亡或过场剧情仍在使用的输入锁。
     /// </summary>
     public void AcquireInputLock(object owner)
     {
@@ -174,7 +174,7 @@ public class Player : Entity
         RefreshInputState();
     }
 
-    /// <summary>Releases only the lock acquired by the supplied owner.</summary>
+    /// <summary>只释放由指定持有者取得的输入锁。</summary>
     public void ReleaseInputLock(object owner)
     {
         if (owner == null)
@@ -274,7 +274,7 @@ public class Player : Entity
         stateMachine.ChangeState(idleState);
     }
 
-    /// <summary>Moves the player during scene setup without changing the current state.</summary>
+    /// <summary>在场景初始化阶段移动玩家，但不改变当前状态机状态。</summary>
     public void TeleportTo(Vector3 position)
     {
         transform.position = position;

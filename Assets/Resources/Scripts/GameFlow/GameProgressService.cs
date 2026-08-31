@@ -3,8 +3,8 @@ using System.IO;
 using UnityEngine;
 
 /// <summary>
-/// Owns the small amount of persistent progress used by scene flow and checkpoints.
-/// The DTO deliberately contains no combat, inventory, or quest data.
+/// 统一管理场景流程和检查点所需的少量持久化进度。
+/// 数据对象刻意不包含战斗、背包或任务数据，避免引入无关系统耦合。
 /// </summary>
 public static class GameProgressService
 {
@@ -31,7 +31,7 @@ public static class GameProgressService
         }
     }
 
-    /// <summary>Replaces the current progress with a clean run that starts in the supplied scene.</summary>
+    /// <summary>清空当前进度，并从指定场景开始一轮新游戏。</summary>
     public static void BeginNewGame(string firstSceneName)
     {
         data = new GameProgressData
@@ -44,7 +44,7 @@ public static class GameProgressService
         Save();
     }
 
-    /// <summary>Marks the next load of the saved scene as a one-time checkpoint resume.</summary>
+    /// <summary>标记下一次加载存档场景时，需要执行一次检查点续玩定位。</summary>
     public static void RequestContinue()
     {
         EnsureLoaded();
@@ -83,7 +83,7 @@ public static class GameProgressService
         Save();
     }
 
-    /// <summary>Persists both checkpoint history and the latest respawn point for this scene.</summary>
+    /// <summary>保存检查点解锁记录，以及当前场景最新的重生位置。</summary>
     public static void ActivateCheckpoint(string checkpointId, string sceneName, Vector3 position)
     {
         if (string.IsNullOrWhiteSpace(checkpointId) || string.IsNullOrWhiteSpace(sceneName))

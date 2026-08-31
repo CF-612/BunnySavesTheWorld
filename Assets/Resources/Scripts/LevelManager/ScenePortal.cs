@@ -2,22 +2,22 @@ using UnityEngine;
 
 public class ScenePortal : MonoBehaviour
 {
-    [Header("要进入的场景 Scene")]
+    [Header("要进入的场景")]
     public string targetSceneName;
 
-    [Header("玩家标签 Player Tag")]
+    [Header("玩家标签")]
     public string playerTag = "Player";
 
-    [Header("交互提示 UI Interact UI")]
+    [Header("交互提示 UI")]
     public GameObject interactUI;
 
-    [Header("剧情 UI 列表 Story UI List")]
+    [Header("剧情 UI 列表")]
     public GameObject[] storyUIs;
 
-    [Header("防误触延迟 Input Delay")]
+    [Header("防误触延迟")]
     public float inputDelay = 0.5f;
 
-    [Header("激活按键 Activation Keys")]
+    [Header("激活按键")]
     [Tooltip("触发场景切换的按键，默认只有 E。可改为 ↑/W 等")]
     public KeyCode[] activationKeys = { KeyCode.E };
 
@@ -35,7 +35,7 @@ public class ScenePortal : MonoBehaviour
     [Tooltip("播放 storyUIs 期间切换为这段 BGM（可选），场景切换后由新场景 BGMPlayer 接管")]
     public AudioClip cutsceneBGM;
 
-    [Header("手动激活模式 Manual Activation")]
+    [Header("手动激活模式")]
     [Tooltip("勾选后不会在 TriggerEnter 时自动响应按键，需要外部调用 EnablePortal() 激活")]
     public bool manualActivation;
 

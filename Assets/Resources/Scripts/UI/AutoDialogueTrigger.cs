@@ -3,21 +3,21 @@ using NodeCanvas.DialogueTrees;
 using UnityEngine;
 using UnityEngine.Events;
 
-/// <summary>Starts one authored NodeCanvas dialogue when the player enters a trigger.</summary>
+/// <summary>玩家进入触发器时，启动该场景对象配置的 NodeCanvas 对话。</summary>
 public class AutoDialogueTrigger : MonoBehaviour
 {
-    [Header("对话 Dialogue")]
+    [Header("对话")]
     [SerializeField] private DialogueTreeController dialogue;
 
-    [Header("玩家 Player")]
+    [Header("玩家")]
     [SerializeField] private Player player;
     [SerializeField] private string playerTag = "Player";
 
-    [Header("触发设置 Trigger Settings")]
+    [Header("触发设置")]
     public bool triggerOnce = true;
     public float delayBeforeDialogue = 0.3f;
 
-    [Header("对话结束回调 On Dialogue Completed")]
+    [Header("对话结束回调")]
     public UnityEvent OnDialogueCompleted;
 
     private bool hasTriggered;

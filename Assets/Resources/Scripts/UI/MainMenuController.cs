@@ -5,31 +5,31 @@ using UnityEngine.UI;
 
 public class MainMenuController : MonoBehaviour
 {
-    [Header("场景设置 Scene Setting")]
+    [Header("场景设置")]
     public string gameSceneName = "GameScene";
     [Tooltip("存在进度时，开始按钮继续上次游戏；可通过 StartNewGame 供单独的新游戏按钮调用。")]
     public bool resumeSavedGame = true;
 
-    [Header("按钮 Button")]
+    [Header("按钮")]
     public Button startButton;
     public Button quitButton;
 
-    [Header("开始游戏剧情 UI 列表 Start Story UI List")]
+    [Header("开始游戏剧情 UI 列表")]
     public GameObject[] startStoryUIs;
 
-    [Header("开场 BGM Opening BGM")]
+    [Header("开场背景音乐")]
     public AudioClip openingBGM;
 
-    [Header("剧情翻页防误触延迟 Input Delay")]
+    [Header("剧情翻页防误触延迟")]
     public float inputDelay = 0.5f;
 
     [Header("场景过渡")]
     public float transitionDuration = 1f;
 
-    [Header("悬停换图 Hover Sprite（可选 Optional）")]
+    [Header("悬停换图（可选）")]
     public Sprite hoverSprite;
 
-    [Header("点击效果 Click Effect")]
+    [Header("点击效果")]
     public float pressScale = 0.9f;
     public float effectTime = 0.08f;
 
@@ -75,7 +75,7 @@ public class MainMenuController : MonoBehaviour
             quitButton.onClick.RemoveListener(HandleQuitClicked);
     }
 
-    /// <summary>Continues existing progress when configured, otherwise starts the authored opening flow.</summary>
+    /// <summary>配置为优先续玩且存在进度时继续游戏，否则播放已配置的开场流程。</summary>
     public void StartGame()
     {
         if (isStarting)
@@ -94,7 +94,7 @@ public class MainMenuController : MonoBehaviour
         StartFreshGame();
     }
 
-    /// <summary>Explicit new-game entry point for a future separate button.</summary>
+    /// <summary>供今后单独的“新游戏”按钮调用的明确入口。</summary>
     public void StartNewGame()
     {
         if (isStarting)

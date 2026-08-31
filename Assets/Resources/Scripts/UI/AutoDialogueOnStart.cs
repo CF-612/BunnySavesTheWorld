@@ -3,16 +3,16 @@ using NodeCanvas.DialogueTrees;
 using UnityEngine;
 using UnityEngine.Events;
 
-/// <summary>Starts a scene-authored NodeCanvas dialogue and optionally transitions afterward.</summary>
+/// <summary>场景开始后启动已配置的 NodeCanvas 对话，并可在结束后跳转场景。</summary>
 public class AutoDialogueOnStart : MonoBehaviour
 {
-    [Header("对话 Dialogue")]
+    [Header("对话")]
     [SerializeField] private DialogueTreeController dialogue;
 
-    [Header("玩家 Player")]
+    [Header("玩家")]
     [SerializeField] private Player player;
 
-    [Header("延迟 Delay")]
+    [Header("延迟")]
     public float delayBeforeStart = 0.5f;
 
     [Header("对话结束回调")]

@@ -1,106 +1,105 @@
-# Unity Project Context
+# Unity 工程上下文
 
 <!-- unity-onboarding:generated:start -->
 
-## Project Summary
+## 工程摘要
 
-- Project root: `D:/GameCreator/Document/BunnySavesTheWorld`
-- Last analyzed: 2026-08-31
-- Last analyzed commit: `8aa4a9123ddf697cc887947c04effb661a0284b6`
-- Game: 2D single-player platform adventure with a plain-C# player state machine, NodeCanvas dialogue, uGUI, and scene-authored gameplay objects.
+- 工程根目录：`D:/GameCreator/Document/BunnySavesTheWorld`
+- 最后整理日期：2026-08-31
+- 最近一次功能改造提交：`240e643fec84e8a9cc49b1175338367b4dd3e770`
+- 游戏类型：2D 单机平台冒险；玩家使用纯 C# 状态机，项目使用 NodeCanvas 对话和 uGUI，并由场景对象承载关卡配置。
 
-## Confirmed Environment
+## 已确认的运行环境
 
-- Unity version: 6000.4.0f1
-- Render pipeline: Built-in Render Pipeline (`GraphicsSettings.asset` has no custom render pipeline)
-- Input system: both Input System and legacy Input Manager are enabled
-- Target platform observed in generated project: Standalone Windows 64-bit
+- Unity 版本：6000.4.0f1
+- 渲染管线：Built-in Render Pipeline（`GraphicsSettings.asset` 未配置自定义渲染管线）
+- 输入系统：Input System 与旧 Input Manager 同时启用
+- 已生成工程中观察到的目标平台：Windows 64 位桌面端
 
-## Important Packages And Frameworks
+## 重要包与框架
 
-| Area | Finding | Confidence | Evidence |
-| --- | --- | --- | --- |
-| Input | Input System 1.19.0 plus legacy input | Confirmed | `Packages/manifest.json`, `ProjectSettings/ProjectSettings.asset` |
-| Dialogue | NodeCanvas Dialogue Trees | Confirmed | `Assets/ParadoxNotion/NodeCanvas`, first-party UI scripts |
-| UI | uGUI 2.0.0 | Confirmed | package manifest and runtime UI scripts |
-| Scene/content loading | Addressables installed; target game flow currently uses SceneManager | Confirmed | package manifest and first-party scene scripts |
-| Camera/cinematics | Cinemachine 3.1.6 and Timeline 1.8.11 installed | Confirmed | package manifest |
-| Tweening | DOTween modules imported | Confirmed | `Assets/Plugins/Demigiant` |
-
-## Directory Structure
-
-| Path | Purpose | Confidence | Evidence |
-| --- | --- | --- | --- |
-| `Assets/Resources/Scripts` | First-party runtime code | Confirmed | representative code inspection |
-| `Assets/Resources/Prefab` | Shared game prefabs, including the level manager | Confirmed | prefab inspection |
-| `Assets/Scenes` | Main menu and gameplay scenes | Confirmed | build settings and scene assets |
-| `Assets/ParadoxNotion` | NodeCanvas vendor code | Confirmed | asmdefs and package content |
-| `Assets/FunkyCode` | SmartLighting2D vendor code and demos | Confirmed | imported scripts and demo scenes |
-
-## Assembly Boundaries
-
-| Assembly | Responsibility | Key references | Notes |
-| --- | --- | --- | --- |
-| Assembly-CSharp | First-party runtime plus SmartLighting2D scripts | Unity, Input System, NodeCanvas, DOTween | Monolithic; no first-party asmdef |
-| NodeCanvas | Dialogue and graph runtime | ParadoxNotion | Vendor assembly |
-| ParadoxNotion | NodeCanvas foundation | Unity | Vendor assembly |
-| DOTween.Modules | Tweening integrations | DOTween | Vendor assembly |
-
-## Scenes And Startup Flow
-
-- Enabled build scenes: `MainMenu`, `Home_Light`, `Home_Dark`, `City`, `City_Giant`, `Giant`.
-- Startup scene: `MainMenu`.
-- Scene flow: `MainMenuController` and `ScenePortal` call the shared `SceneTransitionService`; `SceneEntrance` supplies the initial fade adapter.
-- Checkpoint resume: `GameProgressService` stores the last checkpoint per scene; `LevelManager` consumes a resume request when continuing from the menu.
-
-## Architecture
-
-| Pattern | Finding | Confidence | Evidence |
-| --- | --- | --- | --- |
-| Player behavior | Plain-C# state objects owned by a `Player` MonoBehaviour | Confirmed | `Player.cs`, `StateMachine` scripts |
-| Scene composition | Scene/prefab-authored MonoBehaviours with serialized references | Confirmed | gameplay scenes and `LevelManager.prefab` |
-| Dialogue | NodeCanvas graphs with thin trigger/UI adapters | Confirmed | dialogue scripts and scene references |
-| Persistence | Static, narrow JSON progress service for scene/checkpoint state | Confirmed | `GameFlow/GameProgressService.cs` |
-| Cross-scene presentation | Persistent scene-transition service with runtime fade overlay | Confirmed | `GameFlow/SceneTransitionService.cs` |
-
-## Coding Conventions
-
-- Namespace style: first-party gameplay scripts currently use the global namespace.
-- Serialized fields: mixed public fields and `[SerializeField] private`; existing names are preserved for scene compatibility.
-- Async: Unity coroutines and `SceneManager.LoadSceneAsync`.
-- Comments/docs: bilingual Inspector labels, with XML summaries for system ownership and non-obvious lifecycle behavior.
-
-## Testing And Validation
-
-- EditMode tests: none found for first-party code.
-- PlayMode tests: none found for first-party code.
-- Compilation: Unity Roslyn response-file compilation is available from `Library/Bee`.
-- Known pre-existing import defect: `Assets/Resources/Animations/Player/Player.controller` contains an overflowing local file ID near line 1058.
-
-## Available Unity Tooling
-
-| Capability | Status | Evidence |
+| 领域 | 结论 | 证据 |
 | --- | --- | --- |
-| Unity Editor 6000.4.0f1 | available | `D:/GameCreator/Unity/Editor/Unity.exe` |
-| Unity batch compilation | available when the project is not open elsewhere | batch invocation reached the project lock |
-| Unity MCP read/mutation tools | unavailable | no Unity MCP tools exposed in this session |
-| C# response-file compilation | available | `Library/Bee/artifacts/*/Assembly-CSharp.rsp` |
+| 输入 | Input System 1.19.0，并保留旧输入系统 | `Packages/manifest.json`、`ProjectSettings/ProjectSettings.asset` |
+| 对话 | NodeCanvas Dialogue Trees | `Assets/ParadoxNotion/NodeCanvas`、第一方 UI 脚本 |
+| UI | uGUI 2.0.0 | 包清单和运行时 UI 脚本 |
+| 场景/内容加载 | 已安装 Addressables；当前目标流程仍使用 `SceneManager` | 包清单和第一方场景脚本 |
+| 相机/演出 | Cinemachine 3.1.6、Timeline 1.8.11 | 包清单 |
+| 补间动画 | 已导入 DOTween 模块 | `Assets/Plugins/Demigiant` |
 
-## Important Constraints
+## 主要目录
 
-- Preserve scene and prefab field names and existing UnityEvent method names.
-- Do not import the Udemy sample's combat, inventory, quest, merchant, or skill dependencies.
-- Keep NodeCanvas as the authoritative dialogue authoring system.
-- Treat scenes, prefabs, controllers, and project settings as high-risk serialized assets.
-- Do not include `.claude/` or unrelated editor-generated changes in feature commits.
+| 路径 | 用途 |
+| --- | --- |
+| `Assets/Resources/Scripts` | 第一方运行时代码 |
+| `Assets/Resources/Prefab` | 共享游戏预制体，包括 `LevelManager` |
+| `Assets/Scenes` | 主菜单和游戏场景 |
+| `Assets/ParadoxNotion` | NodeCanvas 第三方代码 |
+| `Assets/FunkyCode` | SmartLighting2D 第三方代码与示例 |
 
-## Unknowns And Confidence
+## 程序集边界
 
-- Runtime behavior still needs manual Play Mode coverage for death timing, checkpoint visuals, all portal routes, and menu continue/new-game UX.
-- The active Unity Editor prevented a separate batch instance from performing a full import-and-test pass.
-- There is no user-facing save-slot selection; the current menu has one continue-or-start action and a callable `StartNewGame` method for a future separate button.
+| 程序集 | 职责 | 说明 |
+| --- | --- | --- |
+| `Assembly-CSharp` | 第一方运行时代码及 SmartLighting2D 脚本 | 当前第一方代码没有 asmdef，整体较集中 |
+| `NodeCanvas` | 对话与图运行时 | 第三方程序集 |
+| `ParadoxNotion` | NodeCanvas 基础层 | 第三方程序集 |
+| `DOTween.Modules` | 补间动画集成 | 第三方程序集 |
 
-## Source Files Inspected
+## 场景与启动流程
+
+- 构建列表中启用的场景：`MainMenu`、`Home_Light`、`Home_Dark`、`City`、`City_Giant`、`Giant`。
+- 启动场景：`MainMenu`。
+- 场景流转：`MainMenuController` 和 `ScenePortal` 调用共享的 `SceneTransitionService`；`SceneEntrance` 提供场景内淡入配置入口。
+- 检查点续玩：`GameProgressService` 保存各场景最新检查点；从菜单续玩时，`LevelManager` 消费一次检查点定位请求。
+
+## 当前架构
+
+| 模式 | 结论 | 证据 |
+| --- | --- | --- |
+| 玩家行为 | `Player` MonoBehaviour 持有纯 C# 状态对象 | `Player.cs`、状态机脚本 |
+| 场景组合 | MonoBehaviour 通过场景/预制体和序列化引用完成配置 | 游戏场景、`LevelManager.prefab` |
+| 对话 | NodeCanvas 图负责内容，触发器/UI 脚本作为轻量适配器 | 对话脚本和场景引用 |
+| 持久化 | 静态、窄范围 JSON 服务保存场景与检查点进度 | `GameFlow/GameProgressService.cs` |
+| 跨场景表现 | 常驻场景过渡服务管理运行时黑幕 | `GameFlow/SceneTransitionService.cs` |
+
+## 编码约定
+
+- 第一方玩法脚本目前使用全局命名空间。
+- 序列化字段混用 public 和 `[SerializeField] private`；为保持场景兼容，现有名称不能随意修改。
+- 异步流程主要使用 Unity 协程和 `SceneManager.LoadSceneAsync`。
+- 面向用户和项目成员的文档、代码注释、Inspector 标题、交付总结、Git commit 标题及正文默认使用中文；技术标识符保留英文。
+
+## 测试与验证
+
+- 未发现第一方 EditMode 或 PlayMode 自动化测试。
+- 可以使用 `Library/Bee` 生成的响应文件进行 Unity Roslyn 编译验证。
+- 已知既有导入缺陷：`Assets/Resources/Animations/Player/Player.controller` 约第 1058 行附近存在超出范围的本地 FileID。
+
+## 可用 Unity 工具
+
+| 能力 | 状态 | 说明 |
+| --- | --- | --- |
+| Unity Editor 6000.4.0f1 | 可用 | `D:/GameCreator/Unity/Editor/Unity.exe` |
+| Unity 批处理编译 | 工程未被其他 Editor 占用时可用 | 上次运行因工程锁而中止 |
+| Unity MCP 读写工具 | 当前会话不可用 | 当前未暴露相关工具 |
+| C# 响应文件编译 | 可用 | `Library/Bee/artifacts/*/Assembly-CSharp.rsp` |
+
+## 重要限制
+
+- 保留场景和预制体中的字段名，以及现有 UnityEvent 方法名。
+- 不引入 Udemy 示例中的战斗、背包、任务、商店或技能依赖。
+- 继续以 NodeCanvas 作为权威对话制作系统。
+- 场景、预制体、Animator Controller 和 ProjectSettings 均按高风险序列化资源处理。
+- 不要把 `.claude/` 或无关的编辑器生成变动加入功能提交。
+
+## 尚需确认的运行时行为
+
+- 仍需在 Play Mode 人工覆盖死亡时序、检查点表现、所有传送门路线，以及菜单续玩/新游戏体验。
+- 仍需检查手动和自动 NodeCanvas 对话在各种组合情况下是否正确持有与释放玩家输入锁。
+- 当前没有面向用户的存档槽选择界面；现有开始按钮为“有存档则续玩，否则开始”，另有 `StartNewGame` 方法可供未来单独按钮调用。
+
+## 主要证据文件
 
 - `ProjectSettings/ProjectVersion.txt`
 - `ProjectSettings/EditorBuildSettings.asset`
@@ -112,6 +111,6 @@
 - `Assets/Resources/Scripts/UI/*Dialogue*`
 - `Assets/Resources/Scripts/UI/MainMenuController.cs`
 - `Assets/Resources/Prefab/LevelManager.prefab`
-- Relevant gameplay scenes and the Udemy reference project's corresponding scripts
+- 相关游戏场景及 Udemy 参考工程的对应脚本
 
 <!-- unity-onboarding:generated:end -->

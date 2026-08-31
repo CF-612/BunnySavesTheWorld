@@ -1,6 +1,6 @@
 using UnityEngine;
 
-/// <summary>Scene authoring adapter for the shared persistent fade service.</summary>
+/// <summary>场景内的配置入口，将淡入表现委托给共享的常驻过渡服务。</summary>
 public class SceneEntrance : MonoBehaviour
 {
     [Header("淡入设置")]

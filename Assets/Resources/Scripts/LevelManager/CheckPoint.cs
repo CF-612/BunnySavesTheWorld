@@ -73,8 +73,8 @@ public class CheckPoint : MonoBehaviour
         if (!string.IsNullOrWhiteSpace(checkpointId))
             return checkpointId;
 
-        // Existing scene instances predate persistent IDs. The scene/hierarchy path gives them a
-        // deterministic identity without forcing high-risk scene YAML edits during this migration.
+        // 旧场景中的检查点尚未配置持久化 ID，因此用“场景名 + 层级路径”生成稳定标识。
+        // 这样无需在本次迁移中批量修改风险较高的场景 YAML 文件。
         StringBuilder path = new StringBuilder(transform.name);
         Transform parent = transform.parent;
         while (parent != null)

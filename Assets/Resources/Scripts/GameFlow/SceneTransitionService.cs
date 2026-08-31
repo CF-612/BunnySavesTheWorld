@@ -4,8 +4,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
-/// Persistent owner for scene loading and the fullscreen fade overlay.
-/// Callers no longer need to create duplicate canvases or continue coroutines after their scene is unloaded.
+/// 跨场景常驻的场景加载与全屏淡入淡出管理器。
+/// 调用方不再需要重复创建画布，也不必让协程依附在即将被卸载的场景对象上。
 /// </summary>
 public sealed class SceneTransitionService : MonoBehaviour
 {
@@ -26,8 +26,8 @@ public sealed class SceneTransitionService : MonoBehaviour
     }
 
     /// <summary>
-    /// Fades out, loads a build scene asynchronously, records the entered scene, and fades back in.
-    /// The persistent host keeps this coroutine alive while the calling scene is unloaded.
+    /// 淡出至黑屏后异步加载构建列表中的场景，记录进入的场景，再执行淡入。
+    /// 常驻对象会在调用方所属场景被卸载后继续维持此协程。
     /// </summary>
     public static void LoadScene(
         string sceneName,
@@ -53,7 +53,7 @@ public sealed class SceneTransitionService : MonoBehaviour
             transitionSfx));
     }
 
-    /// <summary>Used by scenes opened directly in the Editor to reveal them from black.</summary>
+    /// <summary>用于直接从编辑器打开场景时，让画面从黑屏淡入。</summary>
     public static void FadeIn(float duration)
     {
         SceneTransitionService service = EnsureInstance();

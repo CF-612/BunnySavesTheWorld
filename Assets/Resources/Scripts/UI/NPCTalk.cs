@@ -2,23 +2,23 @@ using NodeCanvas.DialogueTrees;
 using NodeCanvas.DialogueTrees.UI.Examples;
 using UnityEngine;
 
-/// <summary>Player-facing adapter for a NodeCanvas dialogue owned by an NPC.</summary>
+/// <summary>连接玩家交互与 NPC 所属 NodeCanvas 对话的场景适配器。</summary>
 public class NPCTalk : MonoBehaviour
 {
-    [Header("要显示/隐藏的文字物体 Text Object")]
+    [Header("要显示或隐藏的提示物体")]
     public GameObject textObject;
 
-    [Header("玩家标签 Player Tag")]
+    [Header("玩家标签")]
     public string playerTag = "Player";
 
-    [Header("NodeCanvas 对话 Dialogue")]
+    [Header("NodeCanvas 对话")]
     [SerializeField] private DialogueTreeController dialogue;
 
-    [Header("玩家朝向设置 Player Facing")]
+    [Header("玩家朝向设置")]
     public Transform playerVisual;
     public bool playerDefaultFaceRight = true;
 
-    [Header("NPC朝向设置 NPC Facing")]
+    [Header("NPC 朝向设置")]
     public Transform npcVisual;
     public bool npcDefaultFaceRight = true;
 
