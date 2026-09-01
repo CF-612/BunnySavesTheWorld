@@ -21,7 +21,6 @@ public class Player : Entity
     public Player_DigState digState { get; private set; }
     public Player_AirStompState airStompState { get; private set; }
     public Player_GlideState glideState { get; private set; }
-    public Player_ChargedJumpState chargedJumpState { get; private set; }
     public Player_PipeState pipeState { get; private set; }
     public Player_DeadState deadState { get; private set; }
 
@@ -29,14 +28,35 @@ public class Player : Entity
 
     [Header("基础运动参数")]
     public float MoveSpd = 8f;
+    [Tooltip("地面起步加速度（Accel = Acceleration）。")]
+    [Min(0f)]
+    public float GroundAccel = 80f;
+    [Tooltip("地面松开输入后的减速度（Decel = Deceleration）。")]
+    [Min(0f)]
+    public float GroundDecel = 100f;
+    [Tooltip("地面反向输入时使用的制动加速度。")]
+    [Min(0f)]
+    public float ReverseBrake = 140f;
+    [Tooltip("空中水平加速度（Accel = Acceleration）。")]
+    [Min(0f)]
+    public float AirAccel = 50f;
+    [Tooltip("空中松开输入后的减速度（Decel = Deceleration）。")]
+    [Min(0f)]
+    public float AirDecel = 30f;
+
+    [Header("跳跃参数")]
     public float JumpForce = 15f;
     [Range(0,1)]
     public float InAirMoveMultiplier = 0.8f;
-
-    [Header("蓄力跳跃参数")]
-    public float MaxChargeJumpForce = 25f;
-    public float MaxChargeTime = 1f;
-    public float ChargeThreshold = 0.1f;
+    [Tooltip("落地前允许提前缓存跳跃输入的时长（秒）。")]
+    [Min(0f)]
+    public float JumpBufferDuration = 0.12f;
+    [Tooltip("离开平台后仍允许起跳的宽限时长（秒）。")]
+    [Min(0f)]
+    public float CoyoteTimeDuration = 0.1f;
+    [Tooltip("上升阶段松开跳跃键后保留的纵向速度比例。")]
+    [Range(0f, 1f)]
+    public float JumpCutMultiplier = 0.5f;
     
     [Header("特殊能力参数")]
     public float GlideGravityScale = 0.5f;
@@ -81,6 +101,9 @@ public class Player : Entity
 
     private SpriteRenderer spriteRenderer;
     private readonly HashSet<object> inputLockOwners = new HashSet<object>();
+    private float lastJumpPressedTime = float.NegativeInfinity;
+    private float lastGroundedTime = float.NegativeInfinity;
+    private bool canUseGroundJump;
 
     protected override void Awake()
     {
@@ -107,7 +130,6 @@ public class Player : Entity
         digState = new Player_DigState(this, stateMachine, "dig");
         airStompState = new Player_AirStompState(this, stateMachine, "airStomp");
         glideState = new Player_GlideState(this, stateMachine, "glide");
-        chargedJumpState = new Player_ChargedJumpState(this, stateMachine, "chargeJump");
         pipeState = new Player_PipeState(this, stateMachine, "");
         deadState = new Player_DeadState(this, stateMachine, "dead");
     }
@@ -138,6 +160,7 @@ public class Player : Entity
 
     private void OnDisable()
     {
+        ResetJumpContext();
         if (input != null)
             input.Disable();
     }
@@ -173,6 +196,7 @@ public class Player : Entity
         if (this == null || owner == null || input == null)
             return;
 
+        ResetJumpContext();
         inputLockOwners.Add(owner);
         RefreshInputState();
     }
@@ -226,6 +250,7 @@ public class Player : Entity
 
     public void EnterPipe(Transform[] path, bool isStart, float speed, Vector2 entryDir)
     {
+        ResetJumpContext();
         pipeState.SetupPipe(path, isStart, speed, entryDir);
         stateMachine.ChangeState(pipeState);
     }
@@ -261,6 +286,7 @@ public class Player : Entity
         transform.position = spawnPosition;
         ShowVisual();
         IsDead = false;
+        ResetJumpContext();
 
         // 恢复物理模拟
         rb.simulated = true;
@@ -282,8 +308,77 @@ public class Player : Entity
     public void TeleportTo(Vector3 position)
     {
         transform.position = position;
+        ResetJumpContext();
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
+    }
+
+    /// <summary>按当前移动阶段的加减速参数，将水平速度平滑逼近目标值。</summary>
+    public void ApplyHorizontalVelocity(float targetVelocity, float accel, float decel, float reverseBrake)
+    {
+        float currentVelocity = rb.linearVelocity.x;
+        float rate;
+
+        if (Mathf.Abs(targetVelocity) < 0.01f)
+        {
+            rate = decel;
+        }
+        else if (Mathf.Abs(currentVelocity) >= 0.01f
+                 && Mathf.Sign(currentVelocity) != Mathf.Sign(targetVelocity))
+        {
+            rate = reverseBrake;
+        }
+        else
+        {
+            rate = accel;
+        }
+
+        float nextVelocity = Mathf.MoveTowards(
+            currentVelocity,
+            targetVelocity,
+            Mathf.Max(0f, rate) * Time.deltaTime);
+
+        SetVelocity(nextVelocity, rb.linearVelocity.y);
+    }
+
+    /// <summary>记录一次跳跃按下输入，供土狼时间或落地缓冲消费。</summary>
+    public void RecordJumpInput()
+    {
+        lastJumpPressedTime = Time.time;
+    }
+
+    /// <summary>刷新最近接地时间，并恢复一次地面跳跃资格。</summary>
+    public void RefreshGroundJumpWindow()
+    {
+        lastGroundedTime = Time.time;
+        canUseGroundJump = true;
+    }
+
+    /// <summary>在跳跃缓冲和接地/土狼时间均有效时，消费一次地面跳跃。</summary>
+    public bool TryConsumeGroundJump()
+    {
+        if (!canUseGroundJump)
+            return false;
+
+        bool hasBufferedInput = Time.time - lastJumpPressedTime <= Mathf.Max(0f, JumpBufferDuration);
+        bool isWithinGroundWindow = isGround
+            || Time.time - lastGroundedTime <= Mathf.Max(0f, CoyoteTimeDuration);
+
+        if (!hasBufferedInput || !isWithinGroundWindow)
+            return false;
+
+        canUseGroundJump = false;
+        lastJumpPressedTime = float.NegativeInfinity;
+        lastGroundedTime = float.NegativeInfinity;
+        return true;
+    }
+
+    /// <summary>清除未消费的跳跃输入和地面跳跃资格。</summary>
+    public void ResetJumpContext()
+    {
+        lastJumpPressedTime = float.NegativeInfinity;
+        lastGroundedTime = float.NegativeInfinity;
+        canUseGroundJump = false;
     }
 
     public void Revive()

@@ -6,17 +6,18 @@ public class Player_idleState : Player_GroundedState
     {
     }
 
-    public override void Enter()
-    {
-        base.Enter();
-        
-        // 进入闲置状态时水平速度归零
-        player.SetVelocity(0, rb.linearVelocity.y);
-    }
-
     public override void Update()
     {
         base.Update();
+
+        if (stateMachine.CurrentState != this)
+            return;
+
+        player.ApplyHorizontalVelocity(
+            0f,
+            player.GroundAccel,
+            player.GroundDecel,
+            player.ReverseBrake);
 
         // 防止角色贴着墙壁时，继续按同一方向键导致播放移动动画
         if (player.moveInput.x == player.facingDir && player.isWall)

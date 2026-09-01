@@ -20,6 +20,9 @@ public class Player_FallState : Player_AirState
     {
         base.Update();
 
+        if (stateMachine.CurrentState != this)
+            return;
+
         if (player.isGround)
         {
             // 计算坠落距离
@@ -32,8 +35,12 @@ public class Player_FallState : Player_AirState
             }
             else
             {
-                // 正常高度 → 返回闲置状态
-                stateMachine.ChangeState(player.idleState);
+                player.RefreshGroundJumpWindow();
+
+                if (player.TryConsumeGroundJump())
+                    stateMachine.ChangeState(player.jumpState);
+                else
+                    stateMachine.ChangeState(player.idleState);
             }
         }
     }

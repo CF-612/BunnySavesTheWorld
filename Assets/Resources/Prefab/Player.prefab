@@ -314,11 +314,20 @@ MonoBehaviour:
   wallCheck: {fileID: 4940860967233414081}
   flipDeadZone: 0.05
   MoveSpd: 8
+  GroundAccel: 80
+  GroundDecel: 100
+  ReverseBrake: 140
+  AirAccel: 50
+  AirDecel: 30
   JumpForce: 15
   InAirMoveMultiplier: 0.8
+  JumpBufferDuration: 0.12
+  CoyoteTimeDuration: 0.2
+  JumpCutMultiplier: 0.5
   GlideGravityScale: 0.5
   AirStompVelocity: 25
   DigSpeed: 2
+  dropThroughDuration: 0.4
   BiteCheck: {fileID: 280459862869515028}
   BiteCheckRadius: 0.6
   WhatIsBiteable:

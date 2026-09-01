@@ -74,7 +74,7 @@
 
 - 未发现第一方 EditMode 或 PlayMode 自动化测试。
 - 可以使用 `Library/Bee` 生成的响应文件进行 Unity Roslyn 编译验证。
-- 已知既有导入缺陷：`Assets/Resources/Animations/Player/Player.controller` 约第 1058 行附近存在超出范围的本地 FileID。
+- 原 `Player.controller` 中由蓄力跳 Entry 过渡使用的异常本地 FileID，已随蓄力跳功能和专用 Animator 状态的删除一并移除。
 
 ## 可用 Unity 工具
 

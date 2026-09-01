@@ -10,6 +10,16 @@ public class Player_AirState : PlayerState
     {
         base.Update();
 
+        if (input.Player.Jump.WasPressedThisFrame())
+            player.RecordJumpInput();
+
+        // 接地帧必须交给 FallState 先处理高处坠落死亡，再决定是否消费缓冲。
+        if (!player.isGround && player.TryConsumeGroundJump())
+        {
+            stateMachine.ChangeState(player.jumpState);
+            return;
+        }
+
         // 基础空中输入速度
         float inputVelocity = player.moveInput.x * player.MoveSpd * player.InAirMoveMultiplier;
 
@@ -38,8 +48,15 @@ public class Player_AirState : PlayerState
                     return;
                 }
             }
+
+            player.SetVelocity(finalX, rb.linearVelocity.y);
+            return;
         }
 
-        player.SetVelocity(finalX, rb.linearVelocity.y);
+        player.ApplyHorizontalVelocity(
+            finalX,
+            player.AirAccel,
+            player.AirDecel,
+            player.AirAccel);
     }
 }

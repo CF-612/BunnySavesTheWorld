@@ -83,7 +83,7 @@
 - 本次功能改造已使用 Unity 工程生成的 Roslyn 响应文件完成 C# 编译，结果无错误。
 - 当时工程正在另一个 Unity Editor 实例中打开，因此独立批处理实例无法完成完整导入和 Play Mode 验证。
 - 仍需人工覆盖：死亡动画时序、检查点表现、所有传送门模式、菜单续玩/新游戏体验、各类 NodeCanvas 对话的输入锁。
-- 已知既有问题：`Assets/Resources/Animations/Player/Player.controller` 约第 1058 行附近存在超出范围的本地 FileID；这不是本次改造引入的。
+- 原 `Player.controller` 中由蓄力跳 Entry 过渡使用的异常本地 FileID，已随蓄力跳功能和专用 Animator 状态的删除一并移除。
 - 既有编译警告包括自定义 `DialogueUGUI` 与 NodeCanvas 程序集同名类型冲突，以及 SmartLighting2D 旧 API 警告；本次改造未扩大这些问题。
 
 ## 更详细的资料

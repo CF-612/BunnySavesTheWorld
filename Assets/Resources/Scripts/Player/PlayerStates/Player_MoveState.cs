@@ -26,9 +26,15 @@ public class Player_MoveState : Player_GroundedState
     {
         base.Update();
 
+        if (stateMachine.CurrentState != this)
+            return;
+
         // 没有水平输入，或者碰到墙壁时，切换回闲置状态
         if (player.moveInput.x == 0 || player.isWall)
+        {
             stateMachine.ChangeState(player.idleState);
+            return;
+        }
 
         // —— 计算风力影响后的水平速度 ——
         float desiredVelocity = player.moveInput.x * player.MoveSpd;
@@ -89,8 +95,15 @@ public class Player_MoveState : Player_GroundedState
             }
         }
 
-        // 执行水平移动
-        player.SetVelocity(desiredVelocity, rb.linearVelocity.y);
+        // 风区保持既有直接速度逻辑；普通移动使用加速、减速和反向制动。
+        if (player.windReceiver != null && player.windReceiver.IsBeingBlown)
+            player.SetVelocity(desiredVelocity, rb.linearVelocity.y);
+        else
+            player.ApplyHorizontalVelocity(
+                desiredVelocity,
+                player.GroundAccel,
+                player.GroundDecel,
+                player.ReverseBrake);
 
         // 风力阻止前进时，玩家仍应面向输入方向
         if (desiredVelocity == 0f && player.moveInput.x != 0)
