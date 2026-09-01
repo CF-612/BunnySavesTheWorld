@@ -24,6 +24,7 @@ public class NPCTalk : MonoBehaviour
 
     private bool playerInRange;
     private bool ownsDialogue;
+    private bool inputLockAcquired;
     private DialogueUGUI dialogueUi;
     private Transform currentPlayer;
     private Player currentPlayerController;
@@ -59,7 +60,11 @@ public class NPCTalk : MonoBehaviour
         FacePlayerToNpc();
         FaceNpcToPlayer();
         ownsDialogue = true;
-        currentPlayerController?.AcquireInputLock(this);
+        if (currentPlayerController != null)
+        {
+            currentPlayerController.AcquireInputLock(this);
+            inputLockAcquired = true;
+        }
         SetPromptVisible(false);
         dialogue.StartDialogue(_ => CompleteDialogue());
     }
@@ -67,7 +72,7 @@ public class NPCTalk : MonoBehaviour
     private void CompleteDialogue()
     {
         ownsDialogue = false;
-        currentPlayerController?.ReleaseInputLock(this);
+        ReleaseInputLockIfNeeded();
         SetPromptVisible(playerInRange);
     }
 
@@ -106,7 +111,7 @@ public class NPCTalk : MonoBehaviour
         if (shouldStopDialogue && dialogue != null)
             dialogue.StopDialogue();
 
-        currentPlayerController?.ReleaseInputLock(this);
+        ReleaseInputLockIfNeeded();
         SetPromptVisible(false);
     }
 
@@ -140,5 +145,17 @@ public class NPCTalk : MonoBehaviour
     {
         if (textObject != null && textObject.activeSelf != visible)
             textObject.SetActive(visible);
+    }
+
+    private void ReleaseInputLockIfNeeded()
+    {
+        if (!inputLockAcquired)
+            return;
+
+        // 使用 Unity 的 != 判断，避免场景卸载后访问已经销毁的 Player。
+        if (currentPlayerController != null)
+            currentPlayerController.ReleaseInputLock(this);
+
+        inputLockAcquired = false;
     }
 }

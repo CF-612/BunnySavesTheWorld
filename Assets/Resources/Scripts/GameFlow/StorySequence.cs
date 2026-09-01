@@ -47,15 +47,16 @@ public sealed class StorySequence
         if (pages == null)
             return false;
 
-        if (currentIndex >= 0 && currentIndex < pages.Length && pages[currentIndex] != null)
-            pages[currentIndex].SetActive(false);
-
         int nextIndex = currentIndex + 1;
         while (nextIndex < pages.Length && pages[nextIndex] == null)
             nextIndex++;
 
+        // 剧情结束时保留最后一页，交给场景过渡黑幕覆盖，避免先露出底层菜单一帧。
         if (nextIndex >= pages.Length)
             return false;
+
+        if (currentIndex >= 0 && currentIndex < pages.Length && pages[currentIndex] != null)
+            pages[currentIndex].SetActive(false);
 
         currentIndex = nextIndex;
         pages[currentIndex].SetActive(true);

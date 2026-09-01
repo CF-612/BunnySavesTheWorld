@@ -466,7 +466,7 @@ AnimatorStateMachine:
   - {fileID: 2620165010767260517}
   - {fileID: -3194111550806361139}
   - {fileID: -8198831669402129780}
-  - {fileID: 9876543210987654321}
+  - {fileID: -987654321098765432}
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 50, y: 20, z: 0}
@@ -1055,7 +1055,7 @@ AnimatorState:
   m_MirrorParameter:
   m_CycleOffsetParameter:
   m_TimeParameter:
---- !u!1109 &9876543210987654321
+--- !u!1109 &-987654321098765432
 AnimatorTransition:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1072,4 +1072,3 @@ AnimatorTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 1
-

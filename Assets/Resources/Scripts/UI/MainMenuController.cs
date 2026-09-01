@@ -7,11 +7,12 @@ public class MainMenuController : MonoBehaviour
 {
     [Header("场景设置")]
     public string gameSceneName = "GameScene";
-    [Tooltip("存在进度时，开始按钮继续上次游戏；可通过 StartNewGame 供单独的新游戏按钮调用。")]
-    public bool resumeSavedGame = true;
 
     [Header("按钮")]
+    [Tooltip("开始新游戏按钮：清空当前进度并播放开场剧情。")]
     public Button startButton;
+    [Tooltip("继续游玩按钮：加载当前存档场景；没有存档时会自动禁用。")]
+    public Button continueButton;
     public Button quitButton;
 
     [Header("开始游戏剧情 UI 列表")]
@@ -50,11 +51,14 @@ public class MainMenuController : MonoBehaviour
     {
         storySequence = new StorySequence(startStoryUIs);
         storySequence.ResetAndHide();
-        SetupButton(startButton, HandleStartClicked, out startButtonImage, out startNormalSprite);
+        SetupButton(startButton, HandleNewGameClicked, out startButtonImage, out startNormalSprite);
+        SetupButton(continueButton, HandleContinueClicked, out Image continueButtonImage, out Sprite continueNormalSprite);
         SetupButton(quitButton, HandleQuitClicked, out quitButtonImage, out quitNormalSprite);
 
         AddHoverEvent(startButton, startButtonImage, startNormalSprite);
+        AddHoverEvent(continueButton, continueButtonImage, continueNormalSprite);
         AddHoverEvent(quitButton, quitButtonImage, quitNormalSprite);
+        SetContinueButtonAvailability();
     }
 
     private void Update()
@@ -70,31 +74,20 @@ public class MainMenuController : MonoBehaviour
     private void OnDestroy()
     {
         if (startButton != null)
-            startButton.onClick.RemoveListener(HandleStartClicked);
+            startButton.onClick.RemoveListener(HandleNewGameClicked);
+        if (continueButton != null)
+            continueButton.onClick.RemoveListener(HandleContinueClicked);
         if (quitButton != null)
             quitButton.onClick.RemoveListener(HandleQuitClicked);
     }
 
-    /// <summary>配置为优先续玩且存在进度时继续游戏，否则播放已配置的开场流程。</summary>
+    /// <summary>兼容旧 UnityEvent 的开始入口；现在等同于开始新游戏。</summary>
     public void StartGame()
     {
-        if (isStarting)
-            return;
-
-        isStarting = true;
-        SetButtonsInteractable(false);
-
-        if (resumeSavedGame && GameProgressService.HasStarted)
-        {
-            GameProgressService.RequestContinue();
-            LoadGameScene(GameProgressService.ContinueScene);
-            return;
-        }
-
-        StartFreshGame();
+        StartNewGame();
     }
 
-    /// <summary>供今后单独的“新游戏”按钮调用的明确入口。</summary>
+    /// <summary>开始新游戏：清空当前窄范围进度，播放开场剧情并进入首个场景。</summary>
     public void StartNewGame()
     {
         if (isStarting)
@@ -103,6 +96,18 @@ public class MainMenuController : MonoBehaviour
         isStarting = true;
         SetButtonsInteractable(false);
         StartFreshGame();
+    }
+
+    /// <summary>继续游玩：请求一次检查点续玩定位，并加载存档中的最近场景。</summary>
+    public void ContinueGame()
+    {
+        if (isStarting || !GameProgressService.HasStarted)
+            return;
+
+        isStarting = true;
+        SetButtonsInteractable(false);
+        GameProgressService.RequestContinue();
+        LoadGameScene(GameProgressService.ContinueScene);
     }
 
     public void QuitGame()
@@ -151,9 +156,14 @@ public class MainMenuController : MonoBehaviour
         SceneTransitionService.LoadScene(sceneName, transitionDuration, 0.2f, transitionDuration);
     }
 
-    private void HandleStartClicked()
+    private void HandleNewGameClicked()
     {
-        StartCoroutine(PressButtonEffect(startButton, StartGame));
+        StartCoroutine(PressButtonEffect(startButton, StartNewGame));
+    }
+
+    private void HandleContinueClicked()
+    {
+        StartCoroutine(PressButtonEffect(continueButton, ContinueGame));
     }
 
     private void HandleQuitClicked()
@@ -220,8 +230,16 @@ public class MainMenuController : MonoBehaviour
     {
         if (startButton != null)
             startButton.interactable = interactable;
+        if (continueButton != null)
+            continueButton.interactable = interactable && GameProgressService.HasStarted;
         if (quitButton != null)
             quitButton.interactable = interactable;
+    }
+
+    private void SetContinueButtonAvailability()
+    {
+        if (continueButton != null)
+            continueButton.interactable = GameProgressService.HasStarted;
     }
 
     private static void ChangeImageSprite(Image image, Sprite sprite)

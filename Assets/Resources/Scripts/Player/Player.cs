@@ -138,7 +138,8 @@ public class Player : Entity
 
     private void OnDisable()
     {
-        input.Disable();
+        if (input != null)
+            input.Disable();
     }
 
     private void OnDestroy()
@@ -149,6 +150,8 @@ public class Player : Entity
         input.Player.Movement.performed -= OnMovementPerformed;
         input.Player.Movement.canceled -= OnMovementCanceled;
         input.Dispose();
+        input = null;
+        inputLockOwners.Clear();
     }
 
     private void OnMovementPerformed(InputAction.CallbackContext context)
@@ -167,7 +170,7 @@ public class Player : Entity
     /// </summary>
     public void AcquireInputLock(object owner)
     {
-        if (owner == null)
+        if (this == null || owner == null || input == null)
             return;
 
         inputLockOwners.Add(owner);
@@ -177,7 +180,7 @@ public class Player : Entity
     /// <summary>只释放由指定持有者取得的输入锁。</summary>
     public void ReleaseInputLock(object owner)
     {
-        if (owner == null)
+        if (this == null || owner == null || input == null)
             return;
 
         inputLockOwners.Remove(owner);
@@ -186,7 +189,8 @@ public class Player : Entity
 
     private void RefreshInputState()
     {
-        if (input == null)
+        // Unity 对象销毁后，C# 引用可能仍存在；先拦截生命周期回调。
+        if (this == null || input == null)
             return;
 
         if (isActiveAndEnabled && inputLockOwners.Count == 0)

@@ -61,9 +61,13 @@
 - 存档位置：`Application.persistentDataPath/bunny-progress.json`
 - 激活检查点时立即记录检查点 ID、场景和重生位置。
 - 普通场景传送只更新最近进入的场景，不会强制把玩家传回检查点。
-- 主菜单现有开始按钮默认：有进度则续玩，无进度则播放开场剧情并开始新游戏。
-- `MainMenuController.StartNewGame()` 已保留给今后单独的“新游戏”按钮使用。
-- 当前没有多存档槽和面向玩家的存档选择界面。
+- 主菜单现在分为两个按钮：`startButton`（开始新游戏）会重置进度并播放开场剧情；`continueButton`（继续游玩）只在有存档时可用，并加载存档场景。
+- `MainMenuController.StartNewGame()` 和 `MainMenuController.ContinueGame()` 分别是两个按钮的独立入口；`StartGame()` 仅保留为旧 UnityEvent 的兼容别名。
+- 当前没有多存档槽和面向玩家的存档选择界面；继续按钮无存档时自动禁用。
+
+本次未提交的生命周期修复：对话脚本只释放自己实际取得的输入锁，使用 Unity 对象有效性判断；`Player` 在销毁期间不再刷新输入状态。待在 Unity Play Mode 中验证场景切换、对话中切换和 NPC 对话退出后，再与主菜单改动一起提交。
+
+本次未提交的开场剧情过渡修复：`StorySequence` 在确认没有下一页之前不再隐藏当前页。这样开场剧情或传送门剧情结束时，最后一页会继续留在画面上，由常驻 `SceneTransitionService` 的黑幕渐变覆盖，避免剧情页先隐藏而黑幕下一帧才开始时短暂露出主菜单背景。
 
 ## 修改时必须遵守
 

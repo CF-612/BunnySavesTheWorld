@@ -22,6 +22,7 @@ public class AutoDialogueTrigger : MonoBehaviour
 
     private bool hasTriggered;
     private bool dialogueRunning;
+    private bool inputLockAcquired;
     private Coroutine pendingDialogue;
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -49,7 +50,11 @@ public class AutoDialogueTrigger : MonoBehaviour
 
         pendingDialogue = null;
         dialogueRunning = true;
-        player?.AcquireInputLock(this);
+        if (player != null)
+        {
+            player.AcquireInputLock(this);
+            inputLockAcquired = true;
+        }
         dialogue.StartDialogue(_ => CompleteDialogue());
     }
 
@@ -59,7 +64,7 @@ public class AutoDialogueTrigger : MonoBehaviour
             return;
 
         dialogueRunning = false;
-        player?.ReleaseInputLock(this);
+        ReleaseInputLockIfNeeded();
         OnDialogueCompleted?.Invoke();
 
         if (triggerOnce)
@@ -79,6 +84,18 @@ public class AutoDialogueTrigger : MonoBehaviour
         if (shouldStopDialogue && dialogue != null)
             dialogue.StopDialogue();
 
-        player?.ReleaseInputLock(this);
+        ReleaseInputLockIfNeeded();
+    }
+
+    private void ReleaseInputLockIfNeeded()
+    {
+        if (!inputLockAcquired)
+            return;
+
+        // 使用 Unity 的 != 判断，避免场景卸载后访问已经销毁的 Player。
+        if (player != null)
+            player.ReleaseInputLock(this);
+
+        inputLockAcquired = false;
     }
 }

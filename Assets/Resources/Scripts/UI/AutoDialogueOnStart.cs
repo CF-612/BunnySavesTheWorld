@@ -25,6 +25,7 @@ public class AutoDialogueOnStart : MonoBehaviour
 
     private bool dialogueRunning;
     private bool completed;
+    private bool inputLockAcquired;
     private Coroutine pendingDialogue;
 
     private void Start()
@@ -48,7 +49,11 @@ public class AutoDialogueOnStart : MonoBehaviour
 
         pendingDialogue = null;
         dialogueRunning = true;
-        player?.AcquireInputLock(this);
+        if (player != null)
+        {
+            player.AcquireInputLock(this);
+            inputLockAcquired = true;
+        }
         dialogue.StartDialogue(_ => CompleteDialogue());
     }
 
@@ -59,7 +64,7 @@ public class AutoDialogueOnStart : MonoBehaviour
 
         dialogueRunning = false;
         completed = true;
-        player?.ReleaseInputLock(this);
+        ReleaseInputLockIfNeeded();
         OnDialogueFinishedEvent?.Invoke();
 
         if (string.IsNullOrWhiteSpace(loadSceneAfterDialogue))
@@ -82,6 +87,18 @@ public class AutoDialogueOnStart : MonoBehaviour
         if (shouldStopDialogue && dialogue != null)
             dialogue.StopDialogue();
 
-        player?.ReleaseInputLock(this);
+        ReleaseInputLockIfNeeded();
+    }
+
+    private void ReleaseInputLockIfNeeded()
+    {
+        if (!inputLockAcquired)
+            return;
+
+        // 使用 Unity 的 != 判断，避免场景卸载后访问已经销毁的 Player。
+        if (player != null)
+            player.ReleaseInputLock(this);
+
+        inputLockAcquired = false;
     }
 }
