@@ -36,85 +36,31 @@ public class Player_MoveState : Player_GroundedState
             return;
         }
 
-        // —— 计算风力影响后的水平速度 ——
-        float desiredVelocity = player.moveInput.x * player.MoveSpd;
-
-        if (player.windReceiver != null && player.windReceiver.IsBeingBlown)
-        {
-            Vector2 wind = player.windReceiver.GetWindVelocity();
-            if (Mathf.Abs(wind.x) > 0.01f)
-            {
-                WindZoneData windZone = player.windReceiver.GetStrongestZone();
-                float groundResist = windZone != null ? windZone.GroundResistMultiplier : 0.4f;
-                float windContribution = wind.x * groundResist;
-
-                if (Mathf.Abs(player.moveInput.x) < 0.01f)
-                {
-                    // 无输入 → 风力缓慢推动玩家
-                    desiredVelocity = windContribution;
-                }
-                else
-                {
-                    float inputDir = Mathf.Sign(player.moveInput.x);
-                    float windDir = Mathf.Sign(wind.x);
-
-                    if (inputDir == windDir)
-                    {
-                        // 顺风 → 速度加成
-                        desiredVelocity += windContribution;
-                    }
-                    else
-                    {
-                        // 逆风 → 阻力，越靠近风源阻力越大
-                        if (windZone != null)
-                        {
-                            float normalizedDist = windZone.GetNormalizedDistance(
-                                player.transform.position);
-
-                            if (normalizedDist <= windZone.MinApproachNormalized)
-                            {
-                                // 过于接近风源，完全无法前进
-                                desiredVelocity = 0f;
-                            }
-                            else
-                            {
-                                desiredVelocity -= Mathf.Abs(windContribution);
-                                // 保证风力不会把玩家推反向
-                                if (Mathf.Sign(desiredVelocity) != inputDir)
-                                    desiredVelocity = 0f;
-                            }
-                        }
-                        else
-                        {
-                            desiredVelocity -= Mathf.Abs(windContribution);
-                            if (Mathf.Sign(desiredVelocity) != inputDir)
-                                desiredVelocity = 0f;
-                        }
-                    }
-                }
-            }
-        }
+        float targetSpd = player.GetGroundTargetSpd(player.moveInput.x);
 
         // 风区保持既有直接速度逻辑；普通移动使用加速、减速和反向制动。
         if (player.windReceiver != null && player.windReceiver.IsBeingBlown)
-            player.SetVelocity(desiredVelocity, rb.linearVelocity.y);
+            player.SetVelocity(targetSpd, rb.linearVelocity.y);
         else
             player.ApplyHorizontalVelocity(
-                desiredVelocity,
+                targetSpd,
                 player.GroundAccel,
                 player.GroundDecel,
                 player.ReverseBrake);
 
         // 风力阻止前进时，玩家仍应面向输入方向
-        if (desiredVelocity == 0f && player.moveInput.x != 0)
+        if (targetSpd == 0f && player.moveInput.x != 0)
             player.HandleFlip(player.moveInput.x);
 
-        // 脚步声：倒计时归零后随机播放并重置间隔
-        footstepTimer -= Time.deltaTime;
-        if (footstepTimer <= 0f)
+        // 脚步声使用与移动动画相同的速度倍率；原地受阻时不播放。
+        if (Mathf.Abs(rb.linearVelocity.x) > 0.01f)
         {
-            AudioManager.Instance?.PlayRandomSFX(RUN_SFX_PATHS, 0.7f, 0.9f, 1.1f);
-            footstepTimer = Random.Range(FOOTSTEP_INTERVAL_MIN, FOOTSTEP_INTERVAL_MAX);
+            footstepTimer -= Time.deltaTime * player.GetMoveAnimSpdMultiplier();
+            if (footstepTimer <= 0f)
+            {
+                AudioManager.Instance?.PlayRandomSFX(RUN_SFX_PATHS, 0.7f, 0.9f, 1.1f);
+                footstepTimer = Random.Range(FOOTSTEP_INTERVAL_MIN, FOOTSTEP_INTERVAL_MAX);
+            }
         }
     }
 }

@@ -1082,7 +1082,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3011828238102427077, guid: 6f8611bb786391a498184e4ce73d8443, type: 3}
       propertyPath: targetSceneName
-      value: City_Giant
+      value: City_Hand
       objectReference: {fileID: 0}
     - target: {fileID: 3483039259653959159, guid: 6f8611bb786391a498184e4ce73d8443, type: 3}
       propertyPath: m_Size.x
@@ -8677,6 +8677,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da018fc8309841448b08491db31f32b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheckPoint
+  checkpointId: 
+  respawnPoint: {fileID: 0}
+  animator: {fileID: 0}
+  activeAnimatorParameter: isActive
+  activationAudio: {fileID: 0}
 --- !u!61 &534240479
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -9653,6 +9658,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da018fc8309841448b08491db31f32b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheckPoint
+  checkpointId: 
+  respawnPoint: {fileID: 0}
+  animator: {fileID: 0}
+  activeAnimatorParameter: isActive
+  activationAudio: {fileID: 0}
 --- !u!61 &700783614
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -51217,6 +51227,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da018fc8309841448b08491db31f32b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheckPoint
+  checkpointId: 
+  respawnPoint: {fileID: 0}
+  animator: {fileID: 0}
+  activeAnimatorParameter: isActive
+  activationAudio: {fileID: 0}
 --- !u!61 &1366058001
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -52500,6 +52515,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da018fc8309841448b08491db31f32b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheckPoint
+  checkpointId: 
+  respawnPoint: {fileID: 0}
+  animator: {fileID: 0}
+  activeAnimatorParameter: isActive
+  activationAudio: {fileID: 0}
 --- !u!61 &1516427777
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -53947,6 +53967,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da018fc8309841448b08491db31f32b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheckPoint
+  checkpointId: 
+  respawnPoint: {fileID: 0}
+  animator: {fileID: 0}
+  activeAnimatorParameter: isActive
+  activationAudio: {fileID: 0}
 --- !u!61 &1887205348
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -54038,6 +54063,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da018fc8309841448b08491db31f32b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheckPoint
+  checkpointId: 
+  respawnPoint: {fileID: 0}
+  animator: {fileID: 0}
+  activeAnimatorParameter: isActive
+  activationAudio: {fileID: 0}
 --- !u!61 &1902620920
 BoxCollider2D:
   m_ObjectHideFlags: 0

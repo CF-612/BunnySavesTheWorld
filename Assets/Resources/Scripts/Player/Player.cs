@@ -341,6 +341,55 @@ public class Player : Entity
         SetVelocity(nextVelocity, rb.linearVelocity.y);
     }
 
+    /// <summary>计算水平输入与当前风力共同作用后的地面目标速度。</summary>
+    public float GetGroundTargetSpd(float inputX)
+    {
+        float targetSpd = inputX * MoveSpd;
+
+        if (windReceiver == null || !windReceiver.IsBeingBlown)
+            return targetSpd;
+
+        Vector2 wind = windReceiver.GetWindVelocity();
+        if (Mathf.Abs(wind.x) <= 0.01f)
+            return targetSpd;
+
+        WindZoneData windZone = windReceiver.GetStrongestZone();
+        float groundResist = windZone != null ? windZone.GroundResistMultiplier : 0.4f;
+        float windContribution = wind.x * groundResist;
+
+        if (Mathf.Abs(inputX) < 0.01f)
+            return windContribution;
+
+        float inputDir = Mathf.Sign(inputX);
+        float windDir = Mathf.Sign(wind.x);
+        if (inputDir == windDir)
+            return targetSpd + windContribution;
+
+        if (windZone != null)
+        {
+            float normalizedDist = windZone.GetNormalizedDistance(transform.position);
+            if (normalizedDist <= windZone.MinApproachNormalized)
+                return 0f;
+        }
+
+        targetSpd -= Mathf.Abs(windContribution);
+        return Mathf.Sign(targetSpd) == inputDir ? targetSpd : 0f;
+    }
+
+    /// <summary>按实际水平速度计算地面移动动画与脚步声使用的速度倍率。</summary>
+    public float GetMoveAnimSpdMultiplier()
+    {
+        const float minMultiplier = 0.5f;
+        const float maxMultiplier = 1.5f;
+
+        float referenceSpd = Mathf.Abs(MoveSpd);
+        if (referenceSpd < 0.01f)
+            return minMultiplier;
+
+        float normalizedSpd = Mathf.Abs(rb.linearVelocity.x) / referenceSpd;
+        return Mathf.Clamp(normalizedSpd, minMultiplier, maxMultiplier);
+    }
+
     /// <summary>记录一次跳跃按下输入，供土狼时间或落地缓冲消费。</summary>
     public void RecordJumpInput()
     {

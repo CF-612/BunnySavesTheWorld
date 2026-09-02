@@ -23,5 +23,6 @@ public abstract class PlayerState : EntityState
     {
         base.UpdateAnimationParameters();
         anim.SetFloat("yVelocity", rb.linearVelocity.y);
+        anim.SetFloat("moveSpdMultiplier", player.GetMoveAnimSpdMultiplier());
     }
 }
